@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one-screen-per-idea infographic. Hero stats, axis averages, ranked totals, nation x axis heatmap (sortable, doubles as the table view), quadrant, crisis exports, trends. Charts use the validated blue ramps; text stays in ink tokens. */
+/* Layout: one-screen-per-idea infographic. Hero stats, axis averages, ranked totals, nation x axis heatmap (sortable, doubles as the table view), quadrant, crisis exports, trends. Charts use the validated danger ramps (amber > red > magenta); text stays in ink tokens. */
 :root {
   --bg: #f4f3ee;
   --surface: #fcfcfb;
@@ -14,9 +14,9 @@
   --ink-3: #898781;
   --line: #dedcd3;
   --stamp: #b3302c;
-  --g-S: #104281; --g-A: #256abf; --g-B: #3987e5; --g-C: #86b6ef;
-  --gt-S: #ffffff; --gt-A: #ffffff; --gt-B: #ffffff; --gt-C: #0b0b0b;
-  --h1: #b7d3f6; --h2: #86b6ef; --h3: #3987e5; --h4: #256abf; --h5: #104281;
+  --g-S: #8e1265; --g-A: #c21f32; --g-B: #e05a2e; --g-C: #f0a04b;
+  --gt-S: #ffffff; --gt-A: #ffffff; --gt-B: #0b0b0b; --gt-C: #0b0b0b;
+  --h1: #f0a04b; --h2: #e8763a; --h3: #d94a30; --h4: #b81c35; --h5: #8a1163;
   --h1t: #0b0b0b; --h2t: #0b0b0b; --h3t: #0b0b0b; --h4t: #ffffff; --h5t: #ffffff;
   --tip-bg: #16181a; --tip-ink: #f0efec; --tip-2: #c3c2b7;
   --display: "Noto Serif KR", "Nanum Myeongjo", serif;
@@ -26,20 +26,20 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111110; --surface: #1a1a19; --grid: #2c2c2a; --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --line: #2f302d; --stamp: #e06a62;
-    --g-S: #9ec5f4; --g-A: #5598e7; --g-B: #2a78d6; --g-C: #1c5cab;
-    --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #0b0b0b; --gt-C: #f0efec;
-    --h1: #0d366b; --h2: #184f95; --h3: #256abf; --h4: #3987e5; --h5: #86b6ef;
-    --h1t: #f0efec; --h2t: #f0efec; --h3t: #f0efec; --h4t: #0b0b0b; --h5t: #0b0b0b;
+    --g-S: #ff6cc0; --g-A: #f2505a; --g-B: #c24a26; --g-C: #8f4c17;
+    --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #f0efec; --gt-C: #f0efec;
+    --h1: #8f4c17; --h2: #b8501f; --h3: #e0503a; --h4: #f8606e; --h5: #ff7fcb;
+    --h1t: #f0efec; --h2t: #f0efec; --h3t: #0b0b0b; --h4t: #0b0b0b; --h5t: #0b0b0b;
     --tip-bg: #f0efec; --tip-ink: #0b0b0b; --tip-2: #52514e;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111110; --surface: #1a1a19; --grid: #2c2c2a; --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --line: #2f302d; --stamp: #e06a62;
-  --g-S: #9ec5f4; --g-A: #5598e7; --g-B: #2a78d6; --g-C: #1c5cab;
-  --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #0b0b0b; --gt-C: #f0efec;
-  --h1: #0d366b; --h2: #184f95; --h3: #256abf; --h4: #3987e5; --h5: #86b6ef;
-  --h1t: #f0efec; --h2t: #f0efec; --h3t: #f0efec; --h4t: #0b0b0b; --h5t: #0b0b0b;
+  --g-S: #ff6cc0; --g-A: #f2505a; --g-B: #c24a26; --g-C: #8f4c17;
+  --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #f0efec; --gt-C: #f0efec;
+  --h1: #8f4c17; --h2: #b8501f; --h3: #e0503a; --h4: #f8606e; --h5: #ff7fcb;
+  --h1t: #f0efec; --h2t: #f0efec; --h3t: #0b0b0b; --h4t: #0b0b0b; --h5t: #0b0b0b;
   --tip-bg: #f0efec; --tip-ink: #0b0b0b; --tip-2: #52514e;
   color-scheme: dark;
 }
@@ -48,7 +48,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--body); font-
 .wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 h1, h2 { font-family: var(--display); margin: 0; text-wrap: balance; }
 p { margin: 0; }
-a { color: var(--g-A); }
+a { color: var(--ink); text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
 .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stamp); }
 
 .hero { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 2.8rem); padding-bottom: 1.6rem; }
