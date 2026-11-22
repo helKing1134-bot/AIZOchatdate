@@ -1,0 +1,195 @@
+<title>볼리바르 진단 PV 분석</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: found-footage case file. A tape-log of the PV (timecode-like scene numbers, subtitle as the record), then the analysis as numbered findings. Single dark look like the PV's monitor glow. */
+:root {
+  --ink: #0b0d0c;
+  --panel: #131715;
+  --panel-2: #1a1f1c;
+  --line: #2a312d;
+  --fg: #e7e3d6;
+  --muted: #98a19a;
+  --phosphor: #7fd8b4;
+  --rust: #d0663f;
+  --banana: #d9b85a;
+  --display: "Noto Serif KR", "Nanum Myeongjo", serif;
+  --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ink); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 920px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--phosphor); }
+.muted { color: var(--muted); }
+
+.hero {
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(env(safe-area-inset-top, 0px) + 3rem);
+  padding-bottom: 2.2rem;
+  border-bottom: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(0deg, rgba(127,216,180,.035) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse 60% 70% at 80% 20%, rgba(208,102,63,.14), transparent 70%),
+    var(--ink);
+}
+.hero h1 { font-size: clamp(2rem, 5.4vw, 3.2rem); font-weight: 900; margin-top: .5rem; }
+.hero .lede { color: var(--muted); margin-top: .9rem; max-width: 40em; }
+.rec { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--mono); font-size: .75rem; color: var(--rust); margin-top: 1.1rem; }
+.rec::before { content: ""; width: .55rem; height: .55rem; border-radius: 50%; background: var(--rust); }
+
+section { padding-block: 2.4rem; border-bottom: 1px solid var(--line); }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1rem; margin-bottom: 1.3rem; }
+.sec-head h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); }
+
+.tape { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.cue { display: grid; grid-template-columns: 4.2rem minmax(0, 13rem) minmax(0, 1fr); gap: .3rem 1rem; padding: .85rem 1rem; border-top: 1px solid var(--line); background: var(--panel); }
+.cue:first-child { border-top: 0; }
+.cue .tc { font-family: var(--mono); color: var(--phosphor); font-size: .82rem; font-variant-numeric: tabular-nums; padding-top: .1rem; }
+.cue .scene { color: var(--muted); font-size: .88rem; }
+.cue .sub { font-family: var(--display); font-weight: 500; font-size: 1rem; }
+.cue .sub.none { font-family: var(--body); font-weight: 400; color: var(--muted); font-size: .88rem; font-style: italic; }
+.cue.card { background: var(--panel-2); }
+
+.findings { display: grid; gap: 1.1rem; counter-reset: f; list-style: none; margin: 0; padding: 0; }
+.finding { counter-increment: f; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 1.1rem 1.2rem; display: grid; gap: .55rem; }
+.finding h3 { font-size: 1.08rem; display: flex; gap: .7rem; align-items: baseline; }
+.finding h3::before { content: counter(f, decimal-leading-zero); font-family: var(--mono); font-size: .78rem; color: var(--rust); font-weight: 400; }
+.quote { border-left: 2px solid var(--banana); padding: .1rem 0 .1rem .8rem; font-family: var(--display); }
+.finding ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .3rem; }
+
+.arc { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: .8rem; display: grid; gap: .25rem; align-content: start; }
+.step b { font-family: var(--display); }
+.step span { font-size: .86rem; color: var(--muted); }
+.step .k { font-family: var(--mono); font-size: .7rem; color: var(--phosphor); letter-spacing: .08em; }
+
+footer { padding-block: 1.8rem 2.6rem; color: var(--muted); font-size: .82rem; }
+
+@media (max-width: 720px) {
+  .cue { grid-template-columns: 3.4rem minmax(0, 1fr); }
+  .cue .sub { grid-column: 1 / -1; }
+  .arc { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">명일방주 · 스토리 모음집 · 흑류수해 프롤로그</div>
+    <h1>볼리바르 진단 PV 분석</h1>
+    <p class="lede">흑류수해 로그라이크보다 먼저 공개된 미니 이벤트 「볼리바르 진단」 PV의 한국 서버 자막을 장면 순서대로 기록하고, 로그라이크의 엔딩·층 문구·적 설명과 이어 읽었습니다.</p>
+    <span class="rec">캡처 16장 · 자막 원문(한국 서버)</span>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><h2>장면 기록</h2><span class="muted">장면 번호 · 화면 · 자막</span></div>
+      <div class="tape">
+        <div class="cue"><span class="tc">01</span><span class="scene">어둠 속의 작은 불빛들</span><span class="sub none">자막 없음</span></div>
+        <div class="cue"><span class="tc">02</span><span class="scene">농장과 사일로, 그 위로 겹치는 산산이 깨진 거대한 형체</span><span class="sub">우리는 검은 피로 대지를 관개했고,</span></div>
+        <div class="cue"><span class="tc">03</span><span class="scene">같은 농장</span><span class="sub">그렇기에 익어가는 바나나가 작은 산처럼 높이 쌓였다.</span></div>
+        <div class="cue"><span class="tc">04</span><span class="scene">밤, 불타는 농가</span><span class="sub none">자막 없음</span></div>
+        <div class="cue"><span class="tc">05</span><span class="scene">잿빛 연기</span><span class="sub">그러나 우리는 병해 속에 시들어갔고, 한 줌의 재로 불타 사라졌다.</span></div>
+        <div class="cue"><span class="tc">06–07</span><span class="scene">주황 머리의 인물(비글로 보임)</span><span class="sub">"동포를 살해한 살인자 놈들이, 대체 무슨 자격으로 그들을 비난하는거지? 이 사람들이 살아남고자 한 것이, 대체 무슨 잘못이라는 거야?"</span></div>
+        <div class="cue"><span class="tc">08</span><span class="scene">흐릿한 아프리사(토니 로렌츠)</span><span class="sub">그들은 의약품 개발을 지원한다는 명목 하에 이 폐쇄된 마을로 보내졌으나,</span></div>
+        <div class="cue"><span class="tc">09</span><span class="scene">숲에 버려진 병원 침대</span><span class="sub">살아서 이곳을 벗어나, 진실을 전한 이는 아무도 없었다.</span></div>
+        <div class="cue"><span class="tc">10</span><span class="scene">군모를 쓴 여성 장교와 도베르만견(도베르만으로 보임)</span><span class="sub">만약 그런 볼리바르가 애초에 존재하지 않는 것이라면, 이 반 세기에 걸친 투쟁과 희생은 도대체 무엇을 위한 것이란 말인가?</span></div>
+        <div class="cue"><span class="tc">11</span><span class="scene">풀숲 속 브라운관 TV</span><span class="sub">그래, 모든 이의 죽음은 이토록 가벼우니,</span></div>
+        <div class="cue"><span class="tc">12</span><span class="scene">빛이 떠다니는 밤의 숲</span><span class="sub">우리는 오직 고통과 발버둥으로써 영혼의 무게를 더할 뿐이다.</span></div>
+        <div class="cue"><span class="tc">13</span><span class="scene">초록빛 속의 거대한 장치</span><span class="sub">필사적으로 발버둥쳐라, 흑류에 침식되어, 그 속에서 익사하기 전에, 생명 본연의 모습을 되찾기 위하여.</span></div>
+        <div class="cue"><span class="tc">14</span><span class="scene">흰빛으로 흩어지는 인물 실루엣, "OWETS"처럼 보이는 글자</span><span class="sub none">판독 불가</span></div>
+        <div class="cue card"><span class="tc">15</span><span class="scene">오퍼레이터 소개 카드 · APHRISSA 谬因 ★6 · 술사(폭격 술사)</span><span class="sub">저를 믿어주세요, 박사, 황량하고 외진 시장일 수록, 그 색채는 더욱 화려한 법이니까요.</span></div>
+        <div class="cue"><span class="tc">16</span><span class="scene">위에서 내려다본 밀림</span><span class="sub none">자막 없음</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><h2>PV가 그리는 다섯 단계</h2></div>
+      <div class="arc">
+        <div class="step"><span class="k">02–03</span><b>수탈</b><span>흑류를 비료로 써서 바나나를 키움</span></div>
+        <div class="step"><span class="k">04–05</span><b>병과 재</b><span>병해로 시들고 불타 사라짐</span></div>
+        <div class="step"><span class="k">08–09</span><b>은폐</b><span>의약품 개발이라는 명목의 폐쇄 실험, 살아 나온 사람 없음</span></div>
+        <div class="step"><span class="k">06–07 · 10</span><b>내전의 허무</b><span>존재하지 않는 "진정한 볼리바르"를 위한 반세기</span></div>
+        <div class="step"><span class="k">11–13</span><b>침몰과 발버둥</b><span>흑류에 익사하기 전에 생명의 본모습을 되찾으라</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><h2>흑류수해와의 연결점</h2></div>
+      <ol class="findings">
+        <li class="finding">
+          <h3>바나나와 "검은 피"</h3>
+          <p class="quote">우리는 검은 피로 대지를 관개했고, 그렇기에 익어가는 바나나가 작은 산처럼 높이 쌓였다.</p>
+          <ul>
+            <li>1엔딩 연합정부 군인의 대사 "컬럼비아 놈들이 우리더러 비료로 쓰라고 한 그거"와 이어집니다. 흑류를 비료로 써서 바나나를 키운 것입니다.</li>
+            <li>모티브는 "바나나 공화국"으로 보입니다. 미국 과일 기업이 중남미 농장을 지배했고, 1928년 콜롬비아에서는 바나나 농장 학살이 일어났습니다. 『백 년 동안의 고독』에도 나오는 사건이라 마술적 사실주의 분위기와 맞물립니다.</li>
+            <li>"병해 속에 시들어 재가 되었다"는 현실의 바나나 전염병(파나마병)을 떠올리게 합니다. 이 세계에서는 그 병이 사냥개병, 흑류의 침식입니다.</li>
+            <li>2층 「달콤한 상처」(사탕수수), 한코의 플랜테이션 노예 계약과 함께 볼리바르를 관통하는 단 작물 수탈의 축입니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>"의약품 개발 지원"이라는 명목</h3>
+          <p class="quote">그들은 의약품 개발을 지원한다는 명목 하에 이 폐쇄된 마을로 보내졌으나,</p>
+          <ul>
+            <li>나무위키의 "테코마 마을 생체 실험"이 겉으로 어떻게 포장됐는지를 보여 줍니다. 숲에 버려진 병원 침대가 그 흔적입니다.</li>
+            <li>2엔딩에서 토니가 "어릴 때부터 걸어 다니는 시체들의 마을에 버려졌다"고 한 곳이 이 마을입니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>"살아서 진실을 전한 이는 없었다"</h3>
+          <ul>
+            <li>흑류수해 특별 PV의 부제가 「생환 기록」이고 파운드 푸티지 형식이었습니다. 이 PV에도 브라운관 TV, 노이즈, 글리치가 계속 나옵니다.</li>
+            <li>아무도 전하지 못한 진실을 "오직 블랙 플로우만이 기억한다"는 3층 중간보스 설명문, 게임오버 문구 "정보 유실"로 이어집니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>도베르만의 질문과 한코 암살</h3>
+          <p class="quote">만약 그런 볼리바르가 애초에 존재하지 않는 것이라면, 이 반 세기에 걸친 투쟁과 희생은 도대체 무엇을 위한 것이란 말인가?</p>
+          <ul>
+            <li>나무위키 기준으로 한코는 "진정한 볼리바르"가 이룰 수 없는 이상임을 깨닫고 연립정부와 불평등 조약을 맺으려다, 부하 도베르만 대령에게 "제2의 연립정부가 되려는 거냐"는 비판을 받고 암살됩니다.</li>
+            <li>3층 중간보스 '대통령' 한코의 "배신당할 것이며, 어쩌면 그 자신이 가장 수치스러운 배신자"라는 설명과 짝을 이룹니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>비글(로 보이는 인물)의 외침</h3>
+          <ul>
+            <li>"동포를 살해한 살인자들"과 "살아남으려 한 사람들"의 대비는, 진정한 볼리바르인이 상대 쪽 민간인을 부역자라며 학살한다는 설정과 실험 마을에 보내진 사람들을 떠올리게 합니다.</li>
+            <li>1엔딩에서 비글이 사냥개들의 고통을 알아봐 준 것과 같은 결의 인물로 그려집니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>"영혼의 무게"와 "익사하기 전에"</h3>
+          <p class="quote">필사적으로 발버둥쳐라, 흑류에 침식되어, 그 속에서 익사하기 전에, 생명 본연의 모습을 되찾기 위하여.</p>
+          <ul>
+            <li>2엔딩에서 로렌츠는 대부분의 영혼이 흑류에 분해되어 사냥개로 다시 빚어진다고 했습니다. 무게 없이 사라지는 영혼입니다.</li>
+            <li>로그라이크 제목 「침몰자(Drowning Seekers)」의 직접적인 풀이이며, 널값체의 "본래 자기 것이 아닌 형태", 로렌츠가 카데호의 상처 개념을 다시 빚은 것과 이어집니다.</li>
+            <li>13번 장면의 거대한 장치는 2엔딩 보스전의 원계방(源阶方)과 닮았습니다.</li>
+          </ul>
+        </li>
+        <li class="finding">
+          <h3>아프리사 = 谬因 = 토니 로렌츠</h3>
+          <ul>
+            <li>공략 글에서 2엔딩 보스를 缪因/谬因(미우인)이라 부른 이유가 풀립니다. 토니 로렌츠의 오퍼레이터 코드네임이 아프리사(谬因)이고, 6성 폭격 술사입니다.</li>
+            <li>2엔딩 마지막의 "진정한 학문의 자유를 얻게 됐다"는 그녀가 이후 박사에게 손을 내미는 오퍼레이터로 이어집니다.</li>
+            <li>"황량하고 외진 시장일수록 색채가 더 화려하다"는 버려진 땅일수록 더 강렬한 것이 피어난다는 뜻으로, 흑류수해 자체를 가리키는 말로 읽힙니다.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">자막은 PV 캡처의 한국 서버 자막을 그대로 옮겼습니다. 인물 판별("~로 보임")과 모티브 해석은 추론이며 공식 설정이 아닙니다. 설정 참고: 나무위키 「볼리바르(명일방주)」.</div>
+</footer>
