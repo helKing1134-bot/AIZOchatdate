@@ -2,475 +2,438 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Barlow+Condensed:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: an intelligence-brief dossier. Method card, summary register, then one file per nation grouped by grade, then sources. Theme-aware. */
+/* Layout: a threat-assessment dossier on one dark ground, sharing the threat board's identity. Method (four axes + grade scale), a register table with heat cells, change log, then one case file per nation grouped by grade (total + diamond radar on the left, axis meters and evidence on the right), then deferred cases, takeaways, sources. Single dark theme by choice. */
 :root {
-  --bg: #f6f5f1;
-  --paper: #fcfcfb;
-  --line: #dedcd3;
-  --fg: #16181a;
-  --muted: #5d5f5b;
-  --stamp: #b3302c;
-  --ink-blue: #1c5cab;
-  --g-s: #8e1265;
-  --g-a: #c21f32;
-  --g-b: #e05a2e;
-  --g-c: #f0a04b;
-  --gt-s: #ffffff; --gt-a: #ffffff; --gt-b: #0b0b0b; --gt-c: #0b0b0b;
-  --display: "Noto Serif KR", "Nanum Myeongjo", serif;
-  --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: dark;
+  --bg: #000000; --panel: #0b0b0b; --raise: #171717; --line: #2b2b2b; --line-2: #4a4a4a;
+  --ink: #f4f4ef; --ink-2: #b9b9b1; --ink-3: #87877f;
+  --C: #ffc400; --B: #ff7a00; --A: #f00000; --S: #c400b4;
+  --tC: #000000; --tB: #000000; --tA: #000000; --tS: #f4f4ef;
+  --h1: #5e4b00; --h2: #ffc400; --h3: #ff7a00; --h4: #f00000; --h5: #c400b4;
+  --ht1: #f4f4ef; --ht2: #000000; --ht3: #000000; --ht4: #000000; --ht5: #f4f4ef;
+  --display: "Black Han Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111312; --paper: #1a1a19; --line: #2f302d; --fg: #ecebe6; --muted: #a9a89f;
-    --stamp: #e06a62; --ink-blue: #86b6ef;
-    --g-s: #ff6cc0; --g-a: #f2505a; --g-b: #c24a26; --g-c: #8f4c17;
-    --gt-s: #0b0b0b; --gt-a: #0b0b0b; --gt-b: #f0efec; --gt-c: #f0efec;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111312; --paper: #1a1a19; --line: #2f302d; --fg: #ecebe6; --muted: #a9a89f;
-  --stamp: #e06a62; --ink-blue: #86b6ef;
-  --g-s: #ff6cc0; --g-a: #f2505a; --g-b: #c24a26; --g-c: #8f4c17;
-  --gt-s: #0b0b0b; --gt-a: #0b0b0b; --gt-b: #f0efec; --gt-c: #f0efec;
-  color-scheme: dark;
-}
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.7; }
-.wrap { max-width: 960px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
-p { margin: 0; }
-a { color: var(--fg); text-decoration-color: var(--muted); text-underline-offset: 3px; }
-.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stamp); }
-.muted { color: var(--muted); }
+body {
+  background-color: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.7;
+  background-image: linear-gradient(rgba(244,244,239,.028) 1px, transparent 1px), linear-gradient(90deg, rgba(244,244,239,.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+a { color: var(--ink); text-decoration-color: var(--S); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.g-S { --g: var(--S); --gt: var(--tS); } .g-A { --g: var(--A); --gt: var(--tA); } .g-B { --g: var(--B); --gt: var(--tB); } .g-C { --g: var(--C); --gt: var(--tC); }
+.chip { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.4rem; padding: 0 .3rem; background: var(--g); color: var(--gt); font-family: var(--cond); font-weight: 700; font-size: 1rem; line-height: 1; }
 
-.hero { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 3rem); padding-bottom: 2rem; border-bottom: 2px solid var(--fg); }
-.hero h1 { font-size: clamp(2rem, 5.4vw, 3.2rem); font-weight: 900; margin-top: .5rem; }
-.hero .lede { margin-top: .9rem; max-width: 42em; color: var(--muted); }
-.hero .meta { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin-top: 1.1rem; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.hero { position: relative; margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 2.6rem); padding-bottom: 2.2rem; border-bottom: 1px solid var(--line);
+  background: radial-gradient(110% 90% at 88% 0%, rgba(196,0,180,.17), transparent 58%), radial-gradient(80% 80% at 0% 0%, rgba(240,0,0,.14), transparent 60%), var(--bg); }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: repeating-linear-gradient(-45deg, var(--S) 0 10px, transparent 10px 20px); }
+.kicker { display: flex; align-items: center; gap: .6rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .18em; color: var(--ink-2); }
+.kicker::before { content: ""; width: .6rem; height: .6rem; background: var(--S); transform: rotate(45deg); }
+.hero h1 { margin-top: .9rem; font-family: var(--display); font-weight: 400; font-size: clamp(2.3rem, 7.4vw, 4.4rem); line-height: 1.05; }
+.hero .ghost { display: block; margin-top: .45rem; font-family: var(--cond); font-weight: 800; font-size: clamp(1rem, 2.8vw, 1.7rem); line-height: 1; letter-spacing: .08em; color: transparent; -webkit-text-stroke: 1px var(--line-2); }
+.hero .lede { margin-top: 1rem; color: var(--ink-2); max-width: 40em; }
+.meta { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.2rem; }
+.meta span { font-family: var(--mono); font-size: .74rem; color: var(--ink-2); border: 1px solid var(--line-2); padding: .1rem .55rem; }
 
-section { padding-block: 2.2rem; border-bottom: 1px solid var(--line); }
-.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1rem; margin-bottom: 1.2rem; }
-.sec-head h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); }
+main { display: grid; gap: 3.2rem; padding-block: 3.2rem 2.4rem; }
+main > section { min-width: 0; }
+.sec-head { display: flex; align-items: center; gap: .8rem; }
+.sec-head::before { content: ""; flex: none; width: .7rem; height: .7rem; background: var(--S); transform: rotate(45deg); }
+.sec-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.45rem, 3.6vw, 1.95rem); line-height: 1.15; }
+.sec-head .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .16em; color: var(--ink-3); white-space: nowrap; }
+.sec-sub { margin-top: .4rem; color: var(--ink-2); font-size: .9rem; max-width: 46em; }
+.sec-body { margin-top: 1.3rem; }
+.note { font-size: .86rem; color: var(--ink-2); }
 
-.axes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; }
-.axis { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: .85rem .95rem; display: grid; gap: .2rem; align-content: start; }
-.axis b { font-family: var(--display); font-size: 1.05rem; }
-.axis span { font-size: .86rem; color: var(--muted); }
-.scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; margin-top: .9rem; }
-.scale div { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: .6rem .7rem; display: grid; gap: .15rem; }
-.scale .range { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+/* method */
+.axes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--panel); }
+.axis { padding: 1rem; display: grid; gap: .35rem; align-content: start; border-right: 1px dashed var(--line-2); }
+.axis:last-child { border-right: 0; }
+.axis svg { width: 2.2rem; height: 2.2rem; }
+.axis b { font-family: var(--display); font-weight: 400; font-size: 1.25rem; }
+.axis span { font-size: .84rem; color: var(--ink-2); line-height: 1.5; }
+.zones { display: flex; height: 30px; margin-top: 1.2rem; }
+.zone { flex: var(--w) 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: .4em; background: var(--g); color: var(--gt); font-family: var(--cond); font-weight: 700; font-size: 1.05rem; letter-spacing: .05em; box-shadow: inset -2px 0 0 var(--bg); white-space: nowrap; }
+.zone small { font-family: var(--body); font-weight: 500; font-size: .74rem; letter-spacing: 0; }
+.zone.D { background: var(--raise); color: var(--ink-3); }
+.zone.S { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,.32) 0 8px, transparent 8px 16px); box-shadow: 0 0 22px rgba(196,0,180,.4); }
+.zticks { position: relative; height: 1.4rem; }
+.zticks span { position: absolute; top: .3rem; transform: translateX(-50%); font-family: var(--mono); font-size: .7rem; color: var(--ink-3); }
 
-.chip { display: inline-grid; place-items: center; min-width: 1.9rem; height: 1.6rem; padding: 0 .4rem; border-radius: 4px; font-family: var(--mono); font-weight: 500; font-size: .85rem; }
-.chip.S { background: var(--g-s); color: var(--gt-s); }
-.chip.A { background: var(--g-a); color: var(--gt-a); }
-.chip.B { background: var(--g-b); color: var(--gt-b); }
-.chip.C { background: var(--g-c); color: var(--gt-c); }
-.chip.N { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+/* register */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--panel); }
+table.reg { width: 100%; border-collapse: collapse; min-width: 600px; }
+.reg th, .reg td { padding: .45rem .6rem; border-bottom: 1px solid var(--line); text-align: left; font-size: .88rem; }
+.reg th { font-weight: 500; font-size: .74rem; color: var(--ink-3); letter-spacing: .06em; white-space: nowrap; }
+.reg th.axh { text-align: center; padding-inline: .15rem; }
+.reg tr:last-child td { border-bottom: 0; }
+.reg td.nm { font-weight: 600; white-space: nowrap; }
+.reg td.ax { padding: .25rem .15rem; width: 2.6rem; }
+.reg td.ax i { display: grid; place-items: center; height: 26px; font-style: normal; font-family: var(--cond); font-weight: 700; font-size: 1.05rem; }
+.v1 { background: var(--h1); color: var(--ht1); } .v2 { background: var(--h2); color: var(--ht2); } .v3 { background: var(--h3); color: var(--ht3); } .v4 { background: var(--h4); color: var(--ht4); } .v5 { background: var(--h5); color: var(--ht5); }
+.reg td.tot { font-family: var(--cond); font-weight: 700; font-size: 1.25rem; text-align: center; }
+.reg td.tr { color: var(--ink-2); }
 
-.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
-table { width: 100%; border-collapse: collapse; min-width: 640px; font-variant-numeric: tabular-nums; }
-th, td { padding: .55rem .7rem; border-bottom: 1px solid var(--line); text-align: left; font-size: .9rem; }
-th { font-weight: 500; color: var(--muted); font-size: .78rem; letter-spacing: .04em; }
-td.n { text-align: center; font-family: var(--mono); }
-td.tot { font-family: var(--mono); font-weight: 500; text-align: center; }
-tr:last-child td { border-bottom: 0; }
+/* change log */
+.logs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.log { background: var(--panel); border: 1px solid var(--line); border-top: 2px dashed var(--line-2); padding: 1rem 1rem 1.1rem; display: grid; gap: .6rem; align-content: start; }
+.log h3 { display: flex; align-items: center; gap: .6rem; font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+.stamp { font-family: var(--mono); font-size: .66rem; letter-spacing: .16em; color: var(--ink); border: 1px solid var(--S); padding: .05rem .4rem; transform: rotate(-4deg); }
+.log ul { margin: 0; padding-left: 1.05rem; display: grid; gap: .4rem; font-size: .88rem; color: var(--ink-2); }
+.log b { color: var(--ink); font-weight: 600; }
 
-.changes { margin: 0; padding-left: 1.1rem; display: grid; gap: .35rem; }
-
-.grade-band { display: grid; gap: 1rem; margin-top: 1.6rem; }
-.grade-band:first-of-type { margin-top: 0; }
+/* case files */
+.band { display: grid; gap: .8rem; }
+.band + .band { margin-top: 2rem; }
 .band-title { display: flex; align-items: center; gap: .7rem; }
-.band-title h3 { font-size: 1.2rem; }
-.file { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-.file-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .9rem; padding: .85rem 1.05rem; border-bottom: 1px solid var(--line); }
-.file-head h4 { font-family: var(--display); font-size: 1.15rem; margin: 0; }
-.file-head .motif { font-size: .85rem; color: var(--muted); }
-.file-head .score { margin-left: auto; font-family: var(--mono); font-size: .82rem; color: var(--muted); white-space: nowrap; }
-.file-body { padding: .9rem 1.05rem 1.05rem; display: grid; gap: .7rem; }
-.file-body .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
-.tag { font-size: .78rem; padding: .05rem .5rem; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); }
-.tag.trend { color: var(--fg); }
-.facts { margin: 0; padding-left: 1.1rem; display: grid; gap: .3rem; }
-.verdict { border-left: 2px solid var(--stamp); padding-left: .8rem; font-size: .93rem; }
+.band-title b { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; background: var(--g); color: var(--gt); font-family: var(--cond); font-weight: 800; font-size: 2rem; line-height: 1; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
+.g-S > .band-title b { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,.32) 0 6px, transparent 6px 12px); }
+.band-title h3 { font-family: var(--display); font-weight: 400; font-size: 1.3rem; }
+.band-title span { font-family: var(--mono); font-size: .72rem; color: var(--ink-3); }
+.band-title .bang { font-family: var(--cond); font-weight: 800; font-style: italic; font-size: 1.7rem; line-height: 1; letter-spacing: .1em; color: var(--g); }
+.file { position: relative; display: grid; grid-template-columns: 132px minmax(0, 1fr); background: var(--panel); border: 1px solid color-mix(in srgb, var(--g) 45%, var(--line)); }
+.file::after { content: ""; position: absolute; top: -1px; right: -1px; width: 130px; max-width: 35%; height: 6px; background: repeating-linear-gradient(-45deg, var(--g) 0 6px, transparent 6px 12px); }
+.file-key { display: grid; justify-items: center; align-content: start; gap: .5rem; padding: 1rem .6rem; border-right: 1px dashed var(--line-2); background: linear-gradient(180deg, color-mix(in srgb, var(--g) 16%, transparent), transparent 70%); }
+.file-key .tot { font-family: var(--cond); font-weight: 800; font-size: 3.2rem; line-height: .9; }
+.file-key .tot small { font-family: var(--mono); font-weight: 400; font-size: .7rem; color: var(--ink-3); }
+.file-key svg { width: 92px; height: 92px; }
+.file-key .trend { font-size: .76rem; color: var(--ink-2); text-align: center; line-height: 1.4; }
+.file-main { padding: 1rem 1.1rem 1.1rem; display: grid; gap: .8rem; min-width: 0; }
+.file-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .8rem; }
+.file-head h4 { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.15; }
+.file-head .motif { font-size: .82rem; color: var(--ink-3); }
+.tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+.tags span { font-size: .74rem; color: var(--ink-2); background: var(--raise); padding: .05rem .5rem; }
+.meters { display: grid; gap: .3rem; }
+.meter { display: grid; grid-template-columns: 2.6em 78px minmax(0, 1fr); align-items: center; gap: .6rem; font-size: .84rem; }
+.meter b { font-weight: 600; }
+.meter .pp { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.meter .pp i { height: 9px; background: var(--line); } .meter .pp i.on { background: var(--hc); }
+.meter span { color: var(--ink-2); }
+.facts { margin: 0; padding-left: 1.05rem; display: grid; gap: .35rem; font-size: .9rem; }
+.facts b { font-weight: 600; }
+.src { font-family: var(--mono); font-size: .66rem; color: var(--ink); border: 1px solid var(--S); padding: 0 .3rem; margin-left: .3rem; white-space: nowrap; vertical-align: .08em; }
+.verdict { border-left: 3px solid var(--g); padding-left: .8rem; font-size: .92rem; }
 
 .pending { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
-.sources { columns: 2; column-gap: 1.6rem; margin: 0; padding-left: 1.1rem; font-size: .85rem; }
+.pend { background: var(--panel); border: 1px dashed var(--line-2); padding: .9rem 1rem; display: grid; gap: .3rem; }
+.pend h4 { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
+.pend h4 small { font-family: var(--mono); font-size: .68rem; color: var(--ink-3); margin-left: .5rem; }
+.pend p { font-size: .88rem; color: var(--ink-2); }
+
+.takes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; }
+.take { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .8rem; align-items: start; }
+.take i { width: .8rem; height: .8rem; margin-top: .45rem; background: var(--S); transform: rotate(45deg); }
+.take b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.08rem; }
+.take p { font-size: .88rem; color: var(--ink-2); }
+
+.sources { columns: 2; column-gap: 1.8rem; margin-bottom: 0; padding-left: 1.05rem; font-size: .84rem; }
 .sources li { break-inside: avoid; margin-bottom: .25rem; }
+footer { border-top: 1px solid var(--line); padding-block: 1.4rem 2.6rem; font-size: .82rem; color: var(--ink-2); }
 
-footer { padding-block: 1.6rem 2.6rem; color: var(--muted); font-size: .82rem; }
-
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .axes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pending { grid-template-columns: minmax(0, 1fr); }
+  .axis:nth-child(2) { border-right: 0; } .axis:nth-child(-n+2) { border-bottom: 1px dashed var(--line-2); }
+  .logs, .pending, .takes { grid-template-columns: minmax(0, 1fr); }
   .sources { columns: 1; }
-  .file-head .score { margin-left: 0; flex-basis: 100%; }
+  .file { grid-template-columns: minmax(0, 1fr); }
+  .file-key { grid-template-columns: auto auto minmax(0, 1fr); align-items: center; justify-items: start; gap: .9rem; border-right: 0; border-bottom: 1px dashed var(--line-2); padding: .7rem .9rem; background: linear-gradient(90deg, color-mix(in srgb, var(--g) 16%, transparent), transparent 70%); }
+  .file-key svg { width: 64px; height: 64px; }
+  .file-key .trend { text-align: left; }
+  .file-main { padding: .9rem; }
+  .meter { grid-template-columns: 2.6em 60px minmax(0, 1fr); gap: .5rem; }
+  .zone small { display: none; }
+  .sec-head .tag { display: none; }
 }
 </style>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">명일방주 · 테라 정세 보고서</div>
-    <h1>테라 국가 위기 등급</h1>
+    <div class="kicker">TERRA THREAT INDEX · 명일방주</div>
+    <h1>테라 국가 위기 등급<span class="ghost">THREAT ASSESSMENT DOSSIER</span></h1>
     <p class="lede">테라의 각 국가가 안고 있는 위기를 재앙, 체제, 차별, 대외의 네 축으로 나눠 점수를 매기고 등급을 정했습니다. 나라마다 확인된 설정과 등급의 근거를 함께 정리했습니다.</p>
-    <div class="meta"><span>평가 16개국 · 보류 3 · 멸망 1</span><span>S 2 · A 3 · B 8 · C 3</span><span>2026-11-22 기준</span></div>
+    <div class="meta"><span>평가 16개국 · 보류 3 · 멸망 1</span><span id="metaCount"></span><span>2026-11-22 갱신</span><span><a href="https://claude.ai/artifact/SuaJ6MYC21sC1674ymNJTG">인포그래픽 보기</a></span></div>
   </div>
 </header>
 
-<main>
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>평가 방법</h2><span class="muted">축마다 1~5점, 합계 4~20점</span></div>
+<main class="wrap">
+  <section aria-labelledby="h-method">
+    <div class="sec-head"><h2 id="h-method">평가 방법</h2><span class="tag">METHOD</span></div>
+    <p class="sec-sub">축마다 1~5점, 합계 4~20점입니다. 합계로 등급을 나눕니다.</p>
+    <div class="sec-body">
       <div class="axes">
-        <div class="axis"><b>재앙</b><span>천재지변, 씨본, 붕괴·데몬, 거수, 짐승군주 같은 초월적·자연적 위협</span></div>
-        <div class="axis"><b>체제</b><span>내전, 독재, 괴뢰정부, 권력 공백 같은 통치의 불안</span></div>
-        <div class="axis"><b>차별</b><span>감염자 박해, 종족 차별, 계급 착취 같은 사회의 가치관</span></div>
-        <div class="axis"><b>대외</b><span>침략당하거나 침략하는 전쟁, 외세 개입</span></div>
+        <div class="axis"><svg viewBox="0 0 24 24" fill="none" stroke="var(--h5)" stroke-width="1.8" aria-hidden="true"><path d="M12 3L22 20H2z"/><path d="M12 9.5v5M12 17v.6"/></svg><b>재앙</b><span>천재지변, 씨본, 데몬, 거수, 짐승군주 같은 초월적·자연적 위협</span></div>
+        <div class="axis"><svg viewBox="0 0 24 24" fill="none" stroke="var(--h5)" stroke-width="1.8" aria-hidden="true"><path d="M3 9l9-6 9 6M5.5 9v9M10 9v9M14 9v9M18.5 9v9M3 20.5h18"/></svg><b>체제</b><span>내전, 독재, 괴뢰정부, 권력 공백, 정당성의 붕괴 같은 통치의 불안</span></div>
+        <div class="axis"><svg viewBox="0 0 24 24" fill="none" stroke="var(--h5)" stroke-width="1.8" aria-hidden="true"><circle cx="6" cy="12" r="3"/><path d="M12 3v18"/><circle cx="18" cy="12" r="3" stroke-dasharray="2 2"/></svg><b>차별</b><span>감염자 박해, 종족 차별, 계급 착취 같은 사회의 가치관</span></div>
+        <div class="axis"><svg viewBox="0 0 24 24" fill="none" stroke="var(--h5)" stroke-width="1.8" aria-hidden="true"><path d="M4 20L20 4M20 4h-6M20 4v6M4 4l16 16M20 20h-6M20 20v-6"/></svg><b>대외</b><span>침략하거나 침략당하는 전쟁, 외세의 개입</span></div>
       </div>
-      <div class="scale">
-        <div><span class="chip S">S</span><b>극한</b><span class="range">17~20</span></div>
-        <div><span class="chip A">A</span><b>심각</b><span class="range">14~16</span></div>
-        <div><span class="chip B">B</span><b>위태</b><span class="range">11~13</span></div>
-        <div><span class="chip C">C</span><b>불안정</b><span class="range">8~10</span></div>
-        <div><span class="chip N">D</span><b>비교적 안정</b><span class="range">7 이하 · 해당 없음</span></div>
+      <div class="zones" aria-label="등급 구간">
+        <div class="zone D" style="--w:4">D <small>비교적 안정</small></div>
+        <div class="zone g-C" style="--w:3">C <small>불안정</small></div>
+        <div class="zone g-B" style="--w:3">B <small>위태</small></div>
+        <div class="zone g-A" style="--w:3">A <small>심각</small></div>
+        <div class="zone g-S S" style="--w:4">S <small>극한</small></div>
       </div>
-      <p class="muted" style="margin-top:1rem;font-size:.88rem">공식 설정이 아니라, 공개된 스토리와 나무위키·PRTS·커뮤니티 자료를 바탕으로 한 주관적 평가입니다. 나무위키는 판본마다 서술이 달라 최신 판과 차이가 있을 수 있습니다.</p>
+      <div class="zticks"><span style="left:2.94%">4</span><span style="left:26.47%">8</span><span style="left:44.12%">11</span><span style="left:61.76%">14</span><span style="left:79.41%">17</span><span style="left:97.06%">20</span></div>
+      <p class="note" style="margin-top:.6rem">공식 설정이 아니라, 공개된 스토리와 위키·커뮤니티 자료, 플레이 기록을 바탕으로 한 주관적 평가입니다. 위키는 판본마다 서술이 달라 최신 판과 차이가 있을 수 있습니다.</p>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>종합 등급표</h2><span class="muted">합계 높은 순</span></div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>등급</th><th>국가</th><th>재앙</th><th>체제</th><th>차별</th><th>대외</th><th>합계</th><th>추세</th></tr></thead>
-          <tbody>
-            <tr><td><span class="chip S">S</span></td><td>볼리바르</td><td class="n">4</td><td class="n">5</td><td class="n">4</td><td class="n">5</td><td class="tot">18</td><td>↗ 내전 재격화 예고</td></tr>
-            <tr><td><span class="chip S">S</span></td><td>카즈델 / 사르카즈</td><td class="n">4</td><td class="n">4</td><td class="n">5</td><td class="n">4</td><td class="tot">17</td><td>↘ 휴전 후 재건 중</td></tr>
-            <tr><td><span class="chip A">A</span></td><td>우르수스 (제국기)</td><td class="n">3</td><td class="n">4</td><td class="n">5</td><td class="n">4</td><td class="tot">16</td><td>↘ 제국 종식, 재편 중</td></tr>
-            <tr><td><span class="chip A">A</span></td><td>이베리아</td><td class="n">5</td><td class="n">4</td><td class="n">4</td><td class="n">2</td><td class="tot">15</td><td>→</td></tr>
-            <tr><td><span class="chip A">A</span></td><td>사르곤</td><td class="n">4</td><td class="n">4</td><td class="n">3</td><td class="n">3</td><td class="tot">14</td><td>→</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>빅토리아</td><td class="n">2</td><td class="n">4</td><td class="n">3</td><td class="n">3</td><td class="tot">12</td><td>↘ 의회제로 수습 중</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>라이타니엔</td><td class="n">2</td><td class="n">3</td><td class="n">3</td><td class="n">4</td><td class="tot">12</td><td>→</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>사미</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">2</td><td class="tot">12</td><td>↘ 멸망 위기 넘김(히든 엔딩 기준)</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>컬럼비아</td><td class="n">3</td><td class="n">2</td><td class="n">3</td><td class="n">4</td><td class="tot">12</td><td>→ 위기 수출국</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>카지미에시</td><td class="n">2</td><td class="n">3</td><td class="n">4</td><td class="n">2</td><td class="tot">11</td><td>↘ 감염자 기사 합법화</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>시라쿠사</td><td class="n">2</td><td class="n">4</td><td class="n">3</td><td class="n">2</td><td class="tot">11</td><td>→</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>아비사</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">1</td><td class="tot">11</td><td>→</td></tr>
-            <tr><td><span class="chip B">B</span></td><td>대염</td><td class="n">4</td><td class="n">2</td><td class="n">3</td><td class="n">2</td><td class="tot">11</td><td>? 미래 내전 언급(엔드필드)</td></tr>
-            <tr><td><span class="chip C">C</span></td><td>용문</td><td class="n">2</td><td class="n">2</td><td class="n">4</td><td class="n">2</td><td class="tot">10</td><td>→</td></tr>
-            <tr><td><span class="chip C">C</span></td><td>쉐라그</td><td class="n">2</td><td class="n">3</td><td class="n">2</td><td class="n">3</td><td class="tot">10</td><td>→</td></tr>
-            <tr><td><span class="chip C">C</span></td><td>라테라노</td><td class="n">2</td><td class="n">2</td><td class="n">4</td><td class="n">2</td><td class="tot">10</td><td>→</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <h3 style="font-size:1.05rem;margin-top:1.4rem">채팅 초안에서 바뀐 점</h3>
-      <ul class="changes" style="margin-top:.5rem">
-        <li><b>빅토리아 A → B:</b> 왕위는 비어 있지만 1098년부터 의회제로 운영되고 있고, 적임자가 나타나면 국민투표로 왕을 뽑기로 한 것이 확인되어 체제·대외 점수를 낮췄습니다.</li>
-        <li><b>사르곤 B → A:</b> 중앙 황실과 이터널 군대가 남쪽 데몬을 막는 데 매달려 있다는 설정을 반영해 재앙 점수를 올렸습니다.</li>
-        <li><b>라테라노 차별 2 → 4:</b> 감염된 공민은 즉시 추방되어 공식적으로 감염자가 한 명도 없다는 설정을 반영했습니다.</li>
-        <li><b>카즈델 체제 5 → 4:</b> 런디니움 전쟁 뒤 휴전과 로도스 사무소 설치를 바탕으로 재건이 시작된 점을 반영했습니다.</li>
-        <li><b>컬럼비아 차별 2 → 3:</b> 감염자에게 민영 보험 가입을 강요하고, 보험료를 못 내면 격리구역이나 개척대로 보내는 구조를 반영했습니다.</li>
-      </ul>
+  <section aria-labelledby="h-reg">
+    <div class="sec-head"><h2 id="h-reg">종합 등급표</h2><span class="tag">REGISTER</span></div>
+    <p class="sec-sub">합계가 높은 순서입니다. 칸의 색은 노랑, 주황, 빨강, 마젠타 순으로 점수가 높아집니다.</p>
+    <div class="sec-body tbl-wrap">
+      <table class="reg">
+        <thead><tr><th>등급</th><th>국가</th><th class="axh">재앙</th><th class="axh">체제</th><th class="axh">차별</th><th class="axh">대외</th><th style="text-align:center">합계</th><th>추세</th></tr></thead>
+        <tbody id="regBody"></tbody>
+      </table>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>국가별 파일</h2></div>
-
-      <div class="grade-band">
-        <div class="band-title"><span class="chip S">S</span><h3>극한</h3></div>
-
-        <article class="file">
-          <div class="file-head"><h4>볼리바르</h4><span class="motif">중남미 · 주 종족 페로</span><span class="score">재앙 4 · 체제 5 · 차별 4 · 대외 5 = 18</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">삼파전 내전</span><span class="tag">괴뢰정부</span><span class="tag">블랙 플로우</span><span class="tag trend">↗ 악화 예고</span></div>
-            <ul class="facts">
-              <li>라이타니엔 괴뢰 <b>싱가스 왕조</b>(전제군주제), 컬럼비아 괴뢰 <b>연립정부</b>(15인 과두 의회), 토착 반군 <b>진정한 볼리바르인</b>(군벌 연합)의 내전이 <b>약 50년</b> 이어짐</li>
-              <li>컬럼비아가 연립정부 소속 <b>테코마 마을</b>에서 짐승군주 생체 실험을 하다 실패해 <b>블랙 플로우 전체가 짐승군주처럼 변질</b>, 물리면 육체가 붕괴하는 사냥개가 생김</li>
-              <li>진정한 볼리바르인은 적 영역 민간인을 부역자라며 학살하는 초토화 정책을 씀</li>
-              <li>중립 도시 도솔레스를 빼면 대부분 지역이 "생지옥"으로 묘사되고, 1100년대에 내전이 다시 격화될 것이라는 언급이 있음</li>
-            </ul>
-            <p class="verdict">두 강대국의 대리전, 반군의 타락, 실험이 만든 재앙이 한 땅에 겹친 곳입니다. 하나의 정부도 온전히 다스리지 못합니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>카즈델 / 사르카즈</h4><span class="motif">이동 국가 · 주 종족 사르카즈</span><span class="score">재앙 4 · 체제 4 · 차별 5 · 대외 4 = 17</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">종족 박해</span><span class="tag">왕위 내전</span><span class="tag">피난 행렬</span><span class="tag trend">↘ 재건 중</span></div>
-            <ul class="facts">
-              <li>사르카즈는 테라 전역에서 미움받는 종족이고, 카즈델은 여러 번 부서지고 재건되기를 되풀이함</li>
-              <li>테레시아와 테레시스의 내전이 있었고, 테레시아는 사망</li>
-              <li>런디니움 전쟁 이후 <b>휴전 합의와 로도스 아일랜드 사무소 설치</b>를 바탕으로 신세대 사르카즈 중심의 재건이 진행 중이라는 서술이 있음</li>
-              <li>사르카즈 피난 행렬과, 그 행렬을 노리는 이국의 함선이 언급됨</li>
-            </ul>
-            <p class="verdict">나라가 있어도 종족 전체가 차별받는다는 점에서 차별 축이 만점입니다. 재건이 시작돼 등급은 내려가는 추세입니다.</p>
-          </div>
-        </article>
+  <section aria-labelledby="h-log">
+    <div class="sec-head"><h2 id="h-log">바뀐 점</h2><span class="tag">CHANGE LOG</span></div>
+    <div class="sec-body logs">
+      <div class="log">
+        <h3><span class="stamp">갱신</span>최근 스토리 반영</h3>
+        <ul>
+          <li><b>라테라노 C → B (체제 2 → 3):</b> 이벤트 「중생의 여정」으로 율법의 진실이 공민에게 공개됐고, 그 뒤 자살하는 공민이 늘고 있습니다.</li>
+          <li><b>쉐라그 체제 3 → 2, 대외 3 → 4:</b> 엔야가 쉐라간드의 의지를 잇고 엔시오데스가 배신자를 구금해 대표자가 되면서 안은 뭉쳤고, 빅토리아의 침공 위협은 커졌습니다. 합계는 10점 그대로입니다.</li>
+          <li><b>시라쿠사 추세 → 에서 ?:</b> 패밀리 없는 신도시 누오보 볼시니가 1년째 운영 중이고, 그레이홀의 도전이 예고되어 있습니다. 점수는 그대로 뒀습니다.</li>
+        </ul>
       </div>
-
-      <div class="grade-band">
-        <div class="band-title"><span class="chip A">A</span><h3>심각</h3></div>
-
-        <article class="file">
-          <div class="file-head"><h4>우르수스 (제국기)</h4><span class="motif">러시아 · 주 종족 우르수스</span><span class="score">재앙 3 · 체제 4 · 차별 5 · 대외 4 = 16</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">감염자 광산</span><span class="tag">군국주의</span><span class="tag">혁명</span><span class="tag trend">↘ 제국 종식</span></div>
-            <ul class="facts">
-              <li>앞선 히포그리프 왕조를 폭력 혁명으로 무너뜨리고 세운 제국. 정적 숙청이 대외 팽창으로 이어짐</li>
-              <li>감염자를 광산 노역에 보내는 <b>테라에서 가장 가혹한 감염자 정책</b>. 리유니온이 이 박해에서 태어남</li>
-              <li>황제 페오도르는 서북 광산 폐쇄와 감염자 처우 개선을 원했지만 사회와 군의 압력으로 미룸</li>
-              <li>메인 17장에서 「겨울 자원 배분 긴급법」을 밀어붙이고 의회를 해산. 반주년 이벤트 「시간아, 앞으로!」에서 호박궁에 불이 번지고 페오도르가 불길 속으로 걸어 들어가며 <b>제국의 시대가 끝남</b></li>
-              <li>새 질서에서 감염자가 어떤 지위를 얻었는지는 확인하지 못함</li>
-            </ul>
-            <p class="verdict">점수는 제국기 기준입니다. 지금은 등급이 크게 바뀌는 전환기라 다음 평가에서 가장 많이 움직일 나라입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>이베리아</h4><span class="motif">스페인·포르투갈 · 리베리 등</span><span class="score">재앙 5 · 체제 4 · 차별 4 · 대외 2 = 15</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">대침묵</span><span class="tag">씨본</span><span class="tag">재판소</span></div>
-            <ul class="facts">
-              <li><b>1038년 대침묵(大静谧)</b>: 심해교단이 이끈 대규모 씨본 침략과 거대한 해일. 이베리아 이야기 전체의 출발점</li>
-              <li>대침묵 이후 국교회를 카르멘 등 12인이 개편해 지금의 <b>재판소(이단심문)</b>로 키움. 주적은 심해교단</li>
-              <li>해안 도시를 잃고, 공포가 강압적 사법·치안으로 이어짐</li>
-            </ul>
-            <p class="verdict">세계 규모 재앙을 정면으로 맞은 나라이고, 그 공포가 통치 방식까지 바꿨습니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>사르곤</h4><span class="motif">중동·남아시아 · 여러 종족</span><span class="score">재앙 4 · 체제 4 · 차별 3 · 대외 3 = 14</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">데몬 전선</span><span class="tag">파디샤·아미르 내전</span><span class="tag">대리전</span></div>
-            <ul class="facts">
-              <li>중앙 황실과 이터널 군대가 <b>남쪽 푄 고온지대의 데몬</b>을 막는 데 국력을 쏟아, 파디샤와 아미르를 통제하지 못함</li>
-              <li>그 결과 아미르 사이 내전이 잦음. 아미르 17명이 반란을 일으키고 파디샤 3명이 연루된 사건이 있음</li>
-              <li>아미르 내전에 컬럼비아 용병과 오리지늄 관리국이 얽힌 대리전 정황</li>
-            </ul>
-            <p class="verdict">바깥의 재앙(데몬)을 막느라 안이 갈라지는 구조입니다. 재앙과 체제가 서로를 키웁니다.</p>
-          </div>
-        </article>
-      </div>
-
-      <div class="grade-band">
-        <div class="band-title"><span class="chip B">B</span><h3>위태</h3></div>
-
-        <article class="file">
-          <div class="file-head"><h4>빅토리아</h4><span class="motif">영국 · 여러 종족</span><span class="score">재앙 2 · 체제 4 · 차별 3 · 대외 3 = 12</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">왕위 공석</span><span class="tag">대공 다툼</span><span class="tag trend">↘ 수습 중</span></div>
-            <ul class="facts">
-              <li>갈리아 전쟁 뒤 무거운 세금에 반발한 귀족들이 쿠데타로 국왕을 처형, 이후 대공들 사이 내전</li>
-              <li>무정부 상태(1094~1098)를 거쳐 <b>1098년부터 왕위 공석의 의회제</b>. 런디니움 의장은 알렉산드리나 비나 빅토리아</li>
-              <li>런디니움 사변 뒤 적임자가 나타날 때까지 왕위를 비워 두고, 이후 국민투표로 국왕을 뽑기로 함</li>
-              <li>수도 런디니움은 오랫동안 사르카즈 군에 점령되어 있었음</li>
-            </ul>
-            <p class="verdict">점령과 내전을 겪었지만 의회와 국민투표라는 출구를 찾아 등급이 내려가는 중입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>라이타니엔</h4><span class="motif">독일·오스트리아 · 엘라피아 등</span><span class="score">재앙 2 · 체제 3 · 차별 3 · 대외 4 = 12</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">선거군주제</span><span class="tag">위치킹</span><span class="tag">괴뢰 왕조</span></div>
-            <ul class="facts">
-              <li>선제후들이 군주를 뽑는 <b>선거군주제</b></li>
-              <li>위치킹(재위 969~1077)은 말년에 광기에 빠졌고, 선제후들이 쌍둥이 여황을 옹립한 1077년 봉기로 처형됨. 완전히 죽은 것은 아니라는 설정이 있음</li>
-              <li>4국(사황) 전쟁에서 빅토리아·우르수스와 함께 <b>갈리아를 멸망</b>시킴</li>
-              <li>볼리바르에 괴뢰 <b>싱가스 왕조</b>를 세웠고, 위치킹이 볼리바르를 이용해 컬럼비아 내란을 꾀한 것이 1048년 컬럼비아의 볼리바르 침공으로 이어짐</li>
-            </ul>
-            <p class="verdict">자국보다 다른 나라의 위기를 키운 쪽입니다. 대외 점수가 높은 이유입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>사미</h4><span class="motif">북유럽 설원 · 여러 부족</span><span class="score">재앙 5 · 체제 3 · 차별 2 · 대외 2 = 12</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">붕괴·데몬</span><span class="tag">고립</span><span class="tag trend">↘ 위기 넘김</span></div>
-            <ul class="facts">
-              <li>국력 대부분을 <b>데몬과의 전쟁</b>에 쏟아 국민 생활이 문명과 단절되다시피 함</li>
-              <li>데몬의 침식이 퍼지며 세상의 법칙이 기괴하게 변질되고 있음</li>
-              <li>로그라이크 「탐험가의 은빛 서리 끝자락」 히든 엔딩 기준으로 데몬 유입 경로를 막아 <b>멸망 직전에 살아남았고</b>, 로도스 주도의 국제 연구기관 설립으로 이어짐</li>
-            </ul>
-            <p class="verdict">재앙 축만 보면 테라 최상위입니다. 사회 갈등이 적어 합계가 B에 머뭅니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>컬럼비아</h4><span class="motif">미국 · 여러 종족</span><span class="score">재앙 3 · 체제 2 · 차별 3 · 대외 4 = 12</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">숨은 차별</span><span class="tag">기업·군</span><span class="tag">위기 수출</span></div>
-            <ul class="facts">
-              <li>법치를 내세우지만 차별이 자유방임 속에 가려져 있음. 감염자는 <b>민영 보험</b>에 들어야 하고, 보험료를 못 내면 격리구역이나 개척대로 밀려남</li>
-              <li>돈이 있으면 감염자도 살 수 있지만, 가난하면 감염자와 같은 대우를 받는 빈부격차</li>
-              <li>라인 랩은 감염자를 연구원으로 채용하면서도 비인도적 실험 기록이 있음. 국방부는 감염자 처리와 재난 복구도 맡음</li>
-              <li>볼리바르에 괴뢰 연립정부를 세우고 <b>블랙 플로우 실험</b>을 벌임. 사르곤 아미르 내전에도 용병이 얽힘</li>
-            </ul>
-            <p class="verdict">자국은 비교적 안정적이지만, 위기를 바깥으로 수출하는 나라입니다. 볼리바르의 S 등급 상당 부분이 이 나라 몫입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>카지미에시</h4><span class="motif">폴란드 · 쿠란타 등</span><span class="score">재앙 2 · 체제 3 · 차별 4 · 대외 2 = 11</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">상업연합회</span><span class="tag">기사 산업</span><span class="tag trend">↘ 개선 중</span></div>
-            <ul class="facts">
-              <li><b>감염자 격리 구역</b>이 따로 있고, 피의 기사가 우승하기 전까지 감염자는 기사 경기에 나설 수 없었음</li>
-              <li>상업연합회가 피의 기사와 타협해 <b>감염자 기사단 결성과 토너먼트 참가가 합법화</b>됨</li>
-              <li>상업연합회가 암살용 "부패한 기사"를 운용한 기록이 있음. 이후 감염자 권익 개선 시도가 이어짐</li>
-            </ul>
-            <p class="verdict">기사도를 상품으로 바꾼 자본의 나라입니다. 차별이 조금씩 풀리고 있습니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>시라쿠사</h4><span class="motif">이탈리아 · 루포 등</span><span class="score">재앙 2 · 체제 4 · 차별 3 · 대외 2 = 11</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">패밀리 연맹</span><span class="tag">늑대 군주</span></div>
-            <ul class="facts">
-              <li>12개 주요 패밀리의 연맹이 정부 역할을 대신함. 실질적 지배자는 대모 시뇨라 시칠리아</li>
-              <li>짐승군주인 <b>늑대 군주</b>들이 있었고, 대부분은 패배해 고개를 숙이거나 황야로 은둔</li>
-              <li>컬럼비아식 법치 도입의 계기가 생겼고, 신도시관리법을 둘러싼 쿠데타가 언급됨</li>
-            </ul>
-            <p class="verdict">마피아가 국가를 대신하는 체제가 핵심 위기입니다. 볼리바르와 함께 짐승군주가 얽힌 나라입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>아비사</h4><span class="motif">해저 문명 · 아비사인</span><span class="score">재앙 5 · 체제 3 · 차별 2 · 대외 1 = 11</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">씨본 전쟁</span><span class="tag">고립주의</span></div>
-            <ul class="facts">
-              <li>씨본과 오랜 전쟁을 치르는 해저 문명</li>
-              <li>뭍과 거의 교류하지 않는 고립주의. 이베리아의 대침묵과 같은 씨본 위협을 공유함</li>
-            </ul>
-            <p class="verdict">이베리아처럼 재앙 축이 압도적입니다. 이번 조사에서 따로 확인한 설정이 적어 일반적인 설정 기준으로 평가했습니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>대염</h4><span class="motif">중국 · 여러 종족</span><span class="score">재앙 4 · 체제 2 · 차별 3 · 대외 2 = 11</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">전제 황정</span><span class="tag">쉐이(거수)</span><span class="tag trend">? 미래 내전</span></div>
-            <ul class="facts">
-              <li>전제군주제. 국가 차원의 제도적 감염자 차별은 없지만, 지방 정부와 민간 차원의 차별은 만연</li>
-              <li>쉐이(岁) 같은 <b>고대 거수</b>라는 재앙을 품고 있음</li>
-              <li>후속작 엔드필드에서 미래 시점의 대염에 <b>내전이 일어났다</b>는 언급이 있음</li>
-            </ul>
-            <p class="verdict">지금은 안정적이지만, 재앙과 미래의 내전이라는 두 개의 시한폭탄이 있습니다.</p>
-          </div>
-        </article>
-      </div>
-
-      <div class="grade-band">
-        <div class="band-title"><span class="chip C">C</span><h3>불안정</h3></div>
-
-        <article class="file">
-          <div class="file-head"><h4>용문</h4><span class="motif">홍콩 · 대염 자치 도시</span><span class="score">재앙 2 · 체제 2 · 차별 4 · 대외 2 = 10</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">빈민가</span><span class="tag">암묵적 공존</span></div>
-            <ul class="facts">
-              <li>감염자를 빈민가에 몰아넣었고, 리유니온 사태 뒤에는 감염자를 격리 수용함</li>
-              <li>메인 1부 이후 래트킹이 감염자를 슬럼에 거두고 근위국이 눈감아 주는 <b>암묵적 공존</b></li>
-              <li>총독 웨이 옌우는 대염 황족이지만 대염이 수시로 감찰사를 보냄</li>
-            </ul>
-            <p class="verdict">번영하는 도시지만 감염자 문제를 묵인과 격리로 덮고 있습니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>쉐라그</h4><span class="motif">알프스 산악국 · 여러 종족</span><span class="score">재앙 2 · 체제 3 · 차별 2 · 대외 3 = 10</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">종교 국가</span><span class="tag">강대국 압박</span></div>
-            <ul class="facts">
-              <li>카란 성산을 성지로 삼는 종교 국가</li>
-              <li>내부 세력 다툼과 주변 강대국의 압박이 있음</li>
-            </ul>
-            <p class="verdict">작은 나라가 강대국 사이에서 균형을 잡는 위태로움입니다.</p>
-          </div>
-        </article>
-
-        <article class="file">
-          <div class="file-head"><h4>라테라노</h4><span class="motif">바티칸 · 산크타, 리베리</span><span class="score">재앙 2 · 체제 2 · 차별 4 · 대외 2 = 10</span></div>
-          <div class="file-body">
-            <div class="tags"><span class="tag">종교 국가</span><span class="tag">감염자 추방</span></div>
-            <ul class="facts">
-              <li>인구 600만, 주요 종족은 산크타와 리베리</li>
-              <li>광석병에 감염된 공민은 <b>즉시 추방</b>되어, 공식적으로 감염자가 한 명도 없음</li>
-              <li>볼리바르에서 산크타의 광륜이 일제히 변질되는 괴현상이 보고됨</li>
-            </ul>
-            <p class="verdict">겉으로는 테라에서 손꼽히게 안정적이지만, 그 안정은 감염자를 내보내는 것으로 유지됩니다.</p>
-          </div>
-        </article>
+      <div class="log">
+        <h3><span class="stamp">조사</span>자료 조사로 고친 점</h3>
+        <ul>
+          <li><b>빅토리아 A → B:</b> 1098년부터 의회제로 운영되고, 적임자가 나타나면 국민투표로 왕을 뽑기로 했습니다.</li>
+          <li><b>사르곤 B → A:</b> 중앙 황실과 군대가 남쪽 데몬을 막는 데 매달려 있습니다.</li>
+          <li><b>라테라노 차별 2 → 4:</b> 감염된 공민은 즉시 추방됩니다.</li>
+          <li><b>카즈델 체제 5 → 4:</b> 런디니움 전쟁 뒤 휴전과 재건이 시작됐습니다.</li>
+          <li><b>컬럼비아 차별 2 → 3:</b> 감염자에게 민영 보험을 강요하고, 못 내면 격리구역이나 개척대로 보냅니다.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>보류·멸망</h2></div>
-      <div class="pending">
-        <article class="file"><div class="file-head"><h4>갈리아</h4><span class="motif">프랑스 · 멸망</span></div><div class="file-body"><p>빅토리아를 침공한 뒤 벌어진 4국(사황) 전쟁에서 라이타니엔·빅토리아·우르수스 연합에 멸망했습니다. 위치킹 한 명의 아츠에 선봉이 격파됐다는 서술이 있습니다. 이미 없는 나라라 점수에서 뺐습니다.</p></div></article>
-        <article class="file"><div class="file-head"><h4>림 빌리톤</h4><span class="motif">호주 · 보류</span></div><div class="file-body"><p>여러 광산 기업이 연합한 컨소시엄형 기업국가입니다. 스토리 정보가 적어 평가를 보류했습니다.</p></div></article>
-        <article class="file"><div class="file-head"><h4>미노스</h4><span class="motif">고대 그리스 · 보류</span></div><div class="file-body"><p>수도는 아테누스입니다. 배경 이벤트가 거의 없어 평가를 보류했습니다.</p></div></article>
-        <article class="file"><div class="file-head"><h4>히가시</h4><span class="motif">일본 · 보류</span></div><div class="file-body"><p>바깥과 교류가 적은 나라로 그려지고, 스토리 정보가 적어 평가를 보류했습니다.</p></div></article>
-      </div>
+  <section aria-labelledby="h-files">
+    <div class="sec-head"><h2 id="h-files">국가별 파일</h2><span class="tag">CASE FILES</span></div>
+    <p class="sec-sub">마름모는 네 축의 점수 모양입니다(위 재앙, 오른쪽 체제, 아래 차별, 왼쪽 대외). <span class="src" style="margin-left:0">제보</span> 표시는 플레이어가 직접 확인해 알려 준 내용입니다.</p>
+    <div class="sec-body" id="files"></div>
+  </section>
+
+  <section aria-labelledby="h-pend">
+    <div class="sec-head"><h2 id="h-pend">보류·멸망</h2><span class="tag">DEFERRED</span></div>
+    <div class="sec-body pending">
+      <div class="pend"><h4>갈리아<small>프랑스 · 멸망</small></h4><p>빅토리아를 침공한 뒤 벌어진 4국(사황) 전쟁에서 라이타니엔·빅토리아·우르수스 연합에 멸망했습니다. 위치킹 한 명의 아츠에 선봉이 격파됐다는 서술이 있습니다. 이미 없는 나라라 점수에서 뺐습니다.</p></div>
+      <div class="pend"><h4>림 빌리톤<small>호주 · 보류</small></h4><p>여러 광산 기업이 연합한 컨소시엄형 기업국가입니다. 스토리 정보가 적어 평가를 보류했습니다.</p></div>
+      <div class="pend"><h4>미노스<small>고대 그리스 · 보류</small></h4><p>수도는 아테누스입니다. 배경 이벤트가 거의 없어 평가를 보류했습니다.</p></div>
+      <div class="pend"><h4>히가시<small>일본 · 보류</small></h4><p>바깥과 교류가 적은 나라로 그려지고, 스토리 정보가 적어 평가를 보류했습니다.</p></div>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>읽을거리</h2></div>
-      <ul class="changes">
-        <li><b>최상위는 찢긴 나라입니다.</b> 볼리바르와 카즈델은 모두 하나의 정부가 온전히 다스리지 못하는 곳입니다.</li>
-        <li><b>재앙형과 인재형이 나뉩니다.</b> 사미·아비사·이베리아는 바깥에서 오는 초월적 위협이, 볼리바르·우르수스·카지미에시는 사람이 만든 체제와 차별이 중심입니다. 사르곤은 둘이 맞물린 경우입니다.</li>
-        <li><b>가해국은 점수가 낮습니다.</b> 컬럼비아와 라이타니엔은 자국보다 다른 나라의 등급을 끌어올렸습니다. 갈리아의 멸망에는 빅토리아와 우르수스도 가담했습니다.</li>
-        <li><b>등급은 움직입니다.</b> 우르수스·빅토리아·카지미에시는 내려가는 중이고, 볼리바르는 다시 올라갈 조짐입니다.</li>
-      </ul>
+  <section aria-labelledby="h-take">
+    <div class="sec-head"><h2 id="h-take">읽을거리</h2><span class="tag">TAKEAWAYS</span></div>
+    <div class="sec-body takes">
+      <div class="take"><i></i><div><b>최상위는 찢긴 나라입니다</b><p>볼리바르와 카즈델은 모두 하나의 정부가 온전히 다스리지 못하는 곳입니다.</p></div></div>
+      <div class="take"><i></i><div><b>재앙형과 인재형이 나뉩니다</b><p>사미·아비사·이베리아는 바깥에서 오는 초월적 위협이, 볼리바르·우르수스·카지미에시는 사람이 만든 체제와 차별이 중심입니다. 사르곤은 둘이 맞물린 경우입니다.</p></div></div>
+      <div class="take"><i></i><div><b>개입한 나라는 점수가 낮습니다</b><p>컬럼비아와 라이타니엔은 자국보다 다른 나라의 등급을 끌어올렸습니다. 빅토리아는 쉐라그까지 압박하고 있습니다.</p></div></div>
+      <div class="take"><i></i><div><b>안정은 깨질 수 있습니다</b><p>가장 안정적으로 보이던 라테라노가 율법의 진실 하나로 흔들렸습니다. 반대로 우르수스·빅토리아·카지미에시는 내려가는 중입니다.</p></div></div>
     </div>
   </section>
 
-  <section>
-    <div class="wrap">
-      <div class="sec-head"><h2>출처</h2><span class="muted">나무위키는 판본마다 서술이 다를 수 있음</span></div>
-      <ul class="sources">
-        <li><a href="https://namu.wiki/w/%EB%B3%BC%EB%A6%AC%EB%B0%94%EB%A5%B4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 볼리바르(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%A6%88%EB%8D%B8">나무위키: 카즈델</a></li>
-        <li><a href="https://namu.wiki/w/%EC%9A%B0%EB%A5%B4%EC%88%98%EC%8A%A4">나무위키: 우르수스</a></li>
-        <li><a href="https://prts.wiki/w/%E6%B3%B0%E6%8B%89%E5%A4%A7%E5%85%B8:%E5%9C%B0%E7%90%86/%E4%B9%8C%E8%90%A8%E6%96%AF">PRTS: 泰拉大典 乌萨斯</a></li>
-        <li><a href="https://www.taptap.cn/moment/866467878675678101">TapTap: 「时间啊，向前！」剧情简析</a></li>
-        <li><a href="https://www.gcores.com/articles/221824">gcores: 「时间啊，向前！」文化向解读</a></li>
-        <li><a href="https://namu.wiki/w/%EB%B9%85%ED%86%A0%EB%A6%AC%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 빅토리아(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%9D%B4%EB%B2%A0%EB%A6%AC%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 이베리아(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%82%AC%EB%A5%B4%EA%B3%A4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 사르곤(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC/%EB%93%B1%EC%9E%A5%EC%9D%B8%EB%AC%BC%20%EB%B0%8F%20%EC%84%B8%EB%A0%A5">나무위키: 명일방주/등장인물 및 세력</a></li>
-        <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%8B%9C%EB%AF%B8%EC%96%B4">나무위키: 카시미어</a></li>
-        <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%8B%9C%EB%AF%B8%EC%96%B4%20%EC%83%81%EC%97%85%EC%97%B0%ED%95%A9%ED%9A%8C">나무위키: 카시미어 상업연합회</a></li>
-        <li><a href="https://namu.wiki/w/%EC%9C%84%EC%B9%98%ED%82%B9(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 위치킹(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EA%B0%80%EC%9A%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 가울(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC/%EC%97%B0%ED%91%9C">나무위키: 명일방주/연표</a></li>
-        <li><a href="https://namu.wiki/w/%EC%BB%AC%EB%9F%BC%EB%B9%84%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 컬럼비아(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%8B%9C%EB%9D%BC%EC%BF%A0%EC%82%AC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 시라쿠사(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%82%AC%EB%AF%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 사미(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%97%BC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 염(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%ED%85%8C%EB%9D%BC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 테라(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EC%9A%A9%EB%AC%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 용문(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EB%9D%BC%ED%85%8C%EB%9D%BC%EB%85%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 라테라노(명일방주)</a></li>
-        <li><a href="https://namu.wiki/w/%EB%A6%BC%20%EB%B9%8C%EB%A6%AC%ED%84%B4">나무위키: 림 빌리턴</a></li>
-        <li><a href="https://namu.wiki/w/%EB%AF%B8%EB%85%B8%EC%8A%A4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 미노스(명일방주)</a></li>
-      </ul>
-    </div>
+  <section aria-labelledby="h-src">
+    <div class="sec-head"><h2 id="h-src">출처</h2><span class="tag">SOURCES</span></div>
+    <p class="sec-sub">나무위키는 판본마다 서술이 다를 수 있습니다.</p>
+    <ul class="sec-body sources">
+      <li>플레이어 제보: 이벤트 「중생의 여정」, 쉐라그·시라쿠사 최근 스토리</li>
+      <li><a href="https://zh.moegirl.org.cn/%E6%8B%89%E7%89%B9%E5%85%B0">萌娘百科: 拉特兰</a></li>
+      <li><a href="https://zh.moegirl.org.cn/%E5%8F%99%E6%8B%89%E5%8F%A4">萌娘百科: 叙拉古</a></li>
+      <li><a href="https://wiki.biligame.com/arknights/%E4%BC%97%E7%94%9F%E8%A1%8C%E8%AE%B0">BWIKI: 众生行记</a></li>
+      <li><a href="https://namu.wiki/w/%EB%B3%BC%EB%A6%AC%EB%B0%94%EB%A5%B4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 볼리바르(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%A6%88%EB%8D%B8">나무위키: 카즈델</a></li>
+      <li><a href="https://namu.wiki/w/%EC%9A%B0%EB%A5%B4%EC%88%98%EC%8A%A4">나무위키: 우르수스</a></li>
+      <li><a href="https://prts.wiki/w/%E6%B3%B0%E6%8B%89%E5%A4%A7%E5%85%B8:%E5%9C%B0%E7%90%86/%E4%B9%8C%E8%90%A8%E6%96%AF">PRTS: 泰拉大典 乌萨斯</a></li>
+      <li><a href="https://www.taptap.cn/moment/866467878675678101">TapTap: 「时间啊，向前！」剧情简析</a></li>
+      <li><a href="https://www.gcores.com/articles/221824">gcores: 「时间啊，向前！」文化向解读</a></li>
+      <li><a href="https://namu.wiki/w/%EB%B9%85%ED%86%A0%EB%A6%AC%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 빅토리아(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%9D%B4%EB%B2%A0%EB%A6%AC%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 이베리아(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%82%AC%EB%A5%B4%EA%B3%A4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 사르곤(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC/%EB%93%B1%EC%9E%A5%EC%9D%B8%EB%AC%BC%20%EB%B0%8F%20%EC%84%B8%EB%A0%A5">나무위키: 명일방주/등장인물 및 세력</a></li>
+      <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%8B%9C%EB%AF%B8%EC%96%B4">나무위키: 카시미어</a></li>
+      <li><a href="https://namu.wiki/w/%EC%B9%B4%EC%8B%9C%EB%AF%B8%EC%96%B4%20%EC%83%81%EC%97%85%EC%97%B0%ED%95%A9%ED%9A%8C">나무위키: 카시미어 상업연합회</a></li>
+      <li><a href="https://namu.wiki/w/%EC%9C%84%EC%B9%98%ED%82%B9(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 위치킹(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EA%B0%80%EC%9A%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 가울(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC/%EC%97%B0%ED%91%9C">나무위키: 명일방주/연표</a></li>
+      <li><a href="https://namu.wiki/w/%EC%BB%AC%EB%9F%BC%EB%B9%84%EC%95%84(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 컬럼비아(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%8B%9C%EB%9D%BC%EC%BF%A0%EC%82%AC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 시라쿠사(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%82%AC%EB%AF%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 사미(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%97%BC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 염(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%ED%85%8C%EB%9D%BC(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 테라(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EC%9A%A9%EB%AC%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 용문(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EB%9D%BC%ED%85%8C%EB%9D%BC%EB%85%B8(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 라테라노(명일방주)</a></li>
+      <li><a href="https://namu.wiki/w/%EB%A6%BC%20%EB%B9%8C%EB%A6%AC%ED%84%B4">나무위키: 림 빌리턴</a></li>
+      <li><a href="https://namu.wiki/w/%EB%AF%B8%EB%85%B8%EC%8A%A4(%EB%AA%85%EC%9D%BC%EB%B0%A9%EC%A3%BC)">나무위키: 미노스(명일방주)</a></li>
+    </ul>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">점수와 등급은 평가자의 해석입니다. 새 스토리가 공개되면 우르수스처럼 크게 바뀔 수 있습니다.</div>
+  <div class="wrap"><p>점수와 등급은 평가자의 해석입니다. 새 스토리가 공개되면 라테라노나 우르수스처럼 크게 바뀔 수 있습니다.</p></div>
 </footer>
+
+<script>
+const AX = ['재앙', '체제', '차별', '대외'];
+const P = '<span class="src">제보</span>';
+const N = [
+  { n: '볼리바르', motif: '중남미 · 주 종족 페로', s: [4,5,4,5], t: '↗ 내전 재격화 예고', tags: ['삼파전 내전', '괴뢰정부', '블랙 플로우'],
+    why: ['블랙 플로우 변질과 사냥개', '괴뢰 정부 둘과 반군의 삼파전', '민간인 학살과 식민 착취', '라이타니엔·컬럼비아의 대리전'],
+    facts: ['라이타니엔 괴뢰 <b>싱가스 왕조</b>(전제군주제), 컬럼비아 괴뢰 <b>연립정부</b>(15인 과두 의회), 토착 반군 <b>진정한 볼리바르인</b>(군벌 연합)의 내전이 <b>약 50년</b> 이어짐',
+      '컬럼비아가 연립정부 소속 <b>테코마 마을</b>에서 짐승군주 생체 실험을 하다 실패해 <b>블랙 플로우 전체가 짐승군주처럼 변질</b>, 물리면 육체가 붕괴하는 사냥개가 생김',
+      '진정한 볼리바르인은 적 영역 민간인을 부역자라며 학살하는 초토화 정책을 씀',
+      '중립 도시 도솔레스를 빼면 대부분 지역이 "생지옥"으로 묘사되고, 1100년대에 내전이 다시 격화될 것이라는 언급이 있음'],
+    v: '두 강대국의 대리전, 반군의 타락, 실험이 만든 재앙이 한 땅에 겹친 곳입니다. 하나의 정부도 온전히 다스리지 못합니다.' },
+  { n: '카즈델 / 사르카즈', motif: '이동 국가 · 주 종족 사르카즈', s: [4,4,5,4], t: '↘ 휴전 뒤 재건 중', tags: ['종족 박해', '왕위 내전', '피난 행렬'],
+    why: ['거듭된 파괴, 사르카즈의 오랜 원한', '테레시아·테레시스의 왕위 내전', '종족 전체가 박해 대상', '런디니움 점령과 전쟁'],
+    facts: ['사르카즈는 테라 전역에서 미움받는 종족이고, 카즈델은 여러 번 부서지고 재건되기를 되풀이함',
+      '테레시아와 테레시스의 내전이 있었고, 테레시아는 사망',
+      '런디니움 전쟁 이후 <b>휴전 합의와 로도스 아일랜드 사무소 설치</b>를 바탕으로 신세대 사르카즈 중심의 재건이 진행 중이라는 서술이 있음',
+      '사르카즈 피난 행렬과, 그 행렬을 노리는 이국의 함선이 언급됨'],
+    v: '나라가 있어도 종족 전체가 차별받는다는 점에서 차별 축이 만점입니다. 재건이 시작돼 등급은 내려가는 추세입니다.' },
+  { n: '우르수스 (제국기)', motif: '러시아 · 주 종족 우르수스', s: [3,4,5,4], t: '↘ 제국 종식, 재편 중', tags: ['감염자 광산', '군국주의', '혁명'],
+    why: ['혹한의 동토와 잦은 천재', '혁명으로 선 제국, 의회 해산', '감염자 광산 노역', '대외 팽창, 갈리아 전쟁'],
+    facts: ['앞선 히포그리프 왕조를 폭력 혁명으로 무너뜨리고 세운 제국. 정적 숙청이 대외 팽창으로 이어짐',
+      '감염자를 광산 노역에 보내는 <b>테라에서 가장 가혹한 감염자 정책</b>. 리유니온이 이 박해에서 태어남',
+      '황제 페오도르는 서북 광산 폐쇄와 감염자 처우 개선을 원했지만 사회와 군의 압력으로 미룸',
+      '메인 17장에서 「겨울 자원 배분 긴급법」을 밀어붙이고 의회를 해산. 반주년 이벤트 「시간아, 앞으로!」에서 호박궁에 불이 번지고 페오도르가 불길 속으로 걸어 들어가며 <b>제국의 시대가 끝남</b>',
+      '새 질서에서 감염자가 어떤 지위를 얻었는지는 확인하지 못함'],
+    v: '점수는 제국기 기준입니다. 지금은 등급이 크게 바뀌는 전환기라 다음 평가에서 가장 많이 움직일 나라입니다.' },
+  { n: '이베리아', motif: '스페인·포르투갈 · 리베리 등', s: [5,4,4,2], t: '→ 유지', tags: ['대침묵', '씨본', '재판소'],
+    why: ['1038년 대침묵, 씨본 침략', '재판소 중심의 공포 통치', '이단 심문과 강압적 치안', '해안을 잃고 고립'],
+    facts: ['<b>1038년 대침묵(大静谧)</b>: 심해교단이 이끈 대규모 씨본 침략과 거대한 해일. 이베리아 이야기 전체의 출발점',
+      '대침묵 이후 국교회를 카르멘 등 12인이 개편해 지금의 <b>재판소(이단심문)</b>로 키움. 주적은 심해교단',
+      '해안 도시를 잃고, 공포가 강압적 사법·치안으로 이어짐'],
+    v: '세계 규모 재앙을 정면으로 맞은 나라이고, 그 공포가 통치 방식까지 바꿨습니다.' },
+  { n: '사르곤', motif: '중동·남아시아 · 여러 종족', s: [4,4,3,3], t: '→ 유지', tags: ['데몬 전선', '파디샤·아미르 내전', '대리전'],
+    why: ['남쪽 푄 고온지대의 데몬 전선', '파디샤·아미르 내전', '부족·계층 격차', '컬럼비아 용병의 대리전'],
+    facts: ['중앙 황실과 이터널 군대가 <b>남쪽 푄 고온지대의 데몬</b>을 막는 데 국력을 쏟아, 파디샤와 아미르를 통제하지 못함',
+      '그 결과 아미르 사이 내전이 잦음. 아미르 17명이 반란을 일으키고 파디샤 3명이 연루된 사건이 있음',
+      '아미르 내전에 컬럼비아 용병과 오리지늄 관리국이 얽힌 대리전 정황'],
+    v: '바깥의 재앙(데몬)을 막느라 안이 갈라지는 구조입니다. 재앙과 체제가 서로를 키웁니다.' },
+  { n: '빅토리아', motif: '영국 · 여러 종족', s: [2,4,3,3], t: '↘ 의회제로 수습 중', tags: ['왕위 공석', '대공 다툼', '쉐라그 압박'],
+    why: ['큰 초월적 재앙 없음', '왕위 공석, 대공 내전', '감염자·계층 차별', '런디니움 점령, 쉐라그와 갈등'],
+    facts: ['갈리아 전쟁 뒤 무거운 세금에 반발한 귀족들이 쿠데타로 국왕을 처형, 이후 대공들 사이 내전',
+      '무정부 상태(1094~1098)를 거쳐 <b>1098년부터 왕위 공석의 의회제</b>. 런디니움 의장은 알렉산드리나 비나 빅토리아',
+      '런디니움 사변 뒤 적임자가 나타날 때까지 왕위를 비워 두고, 이후 국민투표로 국왕을 뽑기로 함',
+      '수도 런디니움은 오랫동안 사르카즈 군에 점령되어 있었음',
+      '쉐라그와 여러 차례 갈등을 빚었고 침공을 꾀했지만 막히는 중' + P],
+    v: '점령과 내전을 겪었지만 의회와 국민투표라는 출구를 찾아 등급이 내려가는 중입니다. 한편 밖으로는 쉐라그를 압박하는 쪽이 됐습니다.' },
+  { n: '라이타니엔', motif: '독일·오스트리아 · 엘라피아 등', s: [2,3,3,4], t: '→ 유지', tags: ['선거군주제', '위치킹', '괴뢰 왕조'],
+    why: ['큰 초월적 재앙 없음', '선제후 정치, 위치킹의 광기', '아츠 엘리트주의, 감염자 차별', '갈리아 멸망, 볼리바르 괴뢰 왕조'],
+    facts: ['선제후들이 군주를 뽑는 <b>선거군주제</b>',
+      '위치킹(재위 969~1077)은 말년에 광기에 빠졌고, 선제후들이 쌍둥이 여황을 옹립한 1077년 봉기로 처형됨. 완전히 죽은 것은 아니라는 설정이 있음',
+      '4국(사황) 전쟁에서 빅토리아·우르수스와 함께 <b>갈리아를 멸망</b>시킴',
+      '볼리바르에 괴뢰 <b>싱가스 왕조</b>를 세웠고, 위치킹이 볼리바르를 이용해 컬럼비아 내란을 꾀한 것이 1048년 컬럼비아의 볼리바르 침공으로 이어짐'],
+    v: '자국보다 다른 나라의 위기를 키운 쪽입니다. 대외 점수가 높은 이유입니다.' },
+  { n: '사미', motif: '북유럽 설원 · 여러 부족', s: [5,3,2,2], t: '↘ 멸망 위기 넘김(히든 엔딩 기준)', tags: ['데몬', '고립'],
+    why: ['데몬의 침식, 법칙의 변질', '국력이 데몬 전쟁에 묶임', '차별 서술 적음', '바깥과 교류 적음'],
+    facts: ['국력 대부분을 <b>데몬과의 전쟁</b>에 쏟아 국민 생활이 문명과 단절되다시피 함',
+      '데몬의 침식이 퍼지며 세상의 법칙이 기괴하게 변질되고 있음',
+      '로그라이크 「탐험가의 은빛 서리 끝자락」 히든 엔딩 기준으로 데몬 유입 경로를 막아 <b>멸망 직전에 살아남았고</b>, 로도스 주도의 국제 연구기관 설립으로 이어짐'],
+    v: '재앙 축만 보면 테라 최상위입니다. 사회 갈등이 적어 합계가 B에 머뭅니다.' },
+  { n: '컬럼비아', motif: '미국 · 여러 종족', s: [3,2,3,4], t: '→ 위기 수출국', tags: ['숨은 차별', '기업·군', '위기 수출'],
+    why: ['기업 실험이 낳는 재앙 위험', '법치 아래 비교적 안정', '감염자 민영 보험 강제', '볼리바르·사르곤 개입'],
+    facts: ['법치를 내세우지만 차별이 자유방임 속에 가려져 있음. 감염자는 <b>민영 보험</b>에 들어야 하고, 보험료를 못 내면 격리구역이나 개척대로 밀려남',
+      '돈이 있으면 감염자도 살 수 있지만, 가난하면 감염자와 같은 대우를 받는 빈부격차',
+      '라인 랩은 감염자를 연구원으로 채용하면서도 비인도적 실험 기록이 있음. 국방부는 감염자 처리와 재난 복구도 맡음',
+      '볼리바르에 괴뢰 연립정부를 세우고 <b>블랙 플로우 실험</b>을 벌임. 사르곤 아미르 내전에도 용병이 얽힘'],
+    v: '자국은 비교적 안정적이지만, 위기를 바깥으로 수출하는 나라입니다. 볼리바르의 S 등급 상당 부분이 이 나라 몫입니다.' },
+  { n: '카지미에시', motif: '폴란드 · 쿠란타 등', s: [2,3,4,2], t: '↘ 감염자 기사 합법화', tags: ['상업연합회', '기사 산업'],
+    why: ['큰 초월적 재앙 없음', '상업연합회의 금권 정치', '감염자 격리 구역', '대외 분쟁 적음'],
+    facts: ['<b>감염자 격리 구역</b>이 따로 있고, 피의 기사가 우승하기 전까지 감염자는 기사 경기에 나설 수 없었음',
+      '상업연합회가 피의 기사와 타협해 <b>감염자 기사단 결성과 토너먼트 참가가 합법화</b>됨',
+      '상업연합회가 암살용 "부패한 기사"를 운용한 기록이 있음. 이후 감염자 권익 개선 시도가 이어짐'],
+    v: '기사도를 상품으로 바꾼 자본의 나라입니다. 차별이 조금씩 풀리고 있습니다.' },
+  { n: '시라쿠사', motif: '이탈리아 · 루포 등', s: [2,4,3,2], t: '? 신도시 1년, 그레이홀과 충돌 예고', tags: ['그레이홀', '누오보 볼시니', '늑대 군주'],
+    why: ['늑대 군주의 그림자', '그레이홀·12 패밀리 체제와 패밀리 없는 신도시가 맞섬', '패밀리 밖 시민의 소외', '대외 분쟁 적음'],
+    facts: ['1039년 시뇨라 시칠리아가 라테라노에서 "총과 질서"를 들여와 패밀리 다툼을 가라앉히고 최고 권력 기구 <b>그레이홀</b>을 세움. 12 패밀리 체제가 이때 굳어짐',
+      '짐승군주인 <b>늑대 군주</b>들이 있었고, 대부분은 패배해 고개를 숙이거나 황야로 은둔',
+      '패밀리 없는 신도시 <b>누오보 볼시니</b>가 세워진 지 1년이 됨' + P,
+      '<b>레온투초</b>와 <b>라비니아</b>가 각자의 정의를 밀고 나가고, <b>드미트리</b>는 겉으로는 적대하면서 뒤에서 도움' + P,
+      '다음 이야기로 <b>그레이홀의 도전 또는 침공</b>이 예정됨' + P],
+    v: '마피아가 국가를 대신하던 체제 옆에 새 체제가 섰습니다. 둘의 충돌이 남아 있어 점수는 두고 추세를 변수로 바꿨습니다.' },
+  { n: '아비사', motif: '해저 문명 · 아비사인', s: [5,3,2,1], t: '→ 유지', tags: ['씨본 전쟁', '고립주의'],
+    why: ['씨본과의 오랜 전쟁', '폐쇄적인 체제', '차별 서술 적음', '뭍과 단절한 고립주의'],
+    facts: ['씨본과 오랜 전쟁을 치르는 해저 문명', '뭍과 거의 교류하지 않는 고립주의. 이베리아의 대침묵과 같은 씨본 위협을 공유함'],
+    v: '이베리아처럼 재앙 축이 압도적입니다. 따로 확인한 설정이 적어 일반적인 설정 기준으로 평가했습니다.' },
+  { n: '대염', motif: '중국 · 여러 종족', s: [4,2,3,2], t: '? 미래 내전 언급(엔드필드)', tags: ['전제 황정', '쉐이(거수)'],
+    why: ['쉐이 같은 고대 거수', '전제 황정이지만 안정', '지방·민간 차원의 감염자 차별', '대외 분쟁 적음'],
+    facts: ['전제군주제. 국가 차원의 제도적 감염자 차별은 없지만, 지방 정부와 민간 차원의 차별은 만연',
+      '쉐이(岁) 같은 <b>고대 거수</b>라는 재앙을 품고 있음',
+      '후속작 엔드필드에서 미래 시점의 대염에 <b>내전이 일어났다</b>는 언급이 있음'],
+    v: '지금은 안정적이지만, 재앙과 미래의 내전이라는 두 개의 시한폭탄이 있습니다.' },
+  { n: '라테라노', motif: '바티칸 · 산크타, 리베리', s: [2,3,4,2], t: '↗ 율법의 진실 공개 뒤 동요', tags: ['종교 국가', '율법', '감염자 추방'],
+    why: ['큰 초월적 재앙 없음', '율법의 진실 공개로 신앙이 흔들림, 자살 증가', '감염자 즉시 추방, 사르카즈 기원 은폐', '대외 분쟁 적음'],
+    facts: ['인구 600만, 주요 종족은 산크타와 리베리',
+      '광석병에 감염된 공민은 <b>즉시 추방</b>되어, 공식적으로 감염자가 한 명도 없음',
+      '산크타가 사르카즈에서 갈라져 나왔다는 사실은 오랫동안 금기였고, 초대 성도의 모습이 지워져 있었음. 사르카즈의 특징이 남은 성도상을 파낸 조사대가 통째로 묻혔다는 서술이 있음',
+      '이벤트 「중생의 여정」에서 <b>율법의 진실이 공민에게 공개</b>됨' + P,
+      '그 뒤 <b>스스로 목숨을 끊는 공민이 늘고 있음</b>' + P,
+      '볼리바르에서 산크타의 광륜이 일제히 변질되는 괴현상이 보고됨'],
+    v: '겉으로는 손꼽히게 안정적이던 나라가, 믿음의 근거가 드러나면서 안에서부터 흔들립니다. 그래서 C에서 B로 올렸습니다.' },
+  { n: '용문', motif: '홍콩 · 대염 자치 도시', s: [2,2,4,2], t: '→ 유지', tags: ['빈민가', '암묵적 공존'],
+    why: ['큰 초월적 재앙 없음', '총독 체제로 안정', '빈민가와 감염자 격리', '대염의 감찰'],
+    facts: ['감염자를 빈민가에 몰아넣었고, 리유니온 사태 뒤에는 감염자를 격리 수용함',
+      '메인 1부 이후 래트킹이 감염자를 슬럼에 거두고 근위국이 눈감아 주는 <b>암묵적 공존</b>',
+      '총독 웨이 옌우는 대염 황족이지만 대염이 수시로 감찰사를 보냄'],
+    v: '번영하는 도시지만 감염자 문제를 묵인과 격리로 덮고 있습니다.' },
+  { n: '쉐라그', motif: '알프스 산악국 · 여러 종족', s: [2,2,2,4], t: '→ 빅토리아 침공을 막아내는 중', tags: ['종교 국가', '빅토리아의 압박', '내부 결속'],
+    why: ['험한 설산', '엔야와 엔시오데스 아래 결속, 배신자 구금', '차별 서술 적음', '빅토리아의 침공 위협'],
+    facts: ['카란 성산을 성지로 삼는 종교 국가',
+      '빅토리아와 여러 차례 갈등을 겪었고 <b>침공 위협</b>을 받음' + P,
+      '<b>엔야</b>가 쉐라간드의 의지를 이어받음' + P,
+      '<b>엔시오데스</b>가 배신자를 찾아 구금하고 쉐라그의 대표자가 되어 침공을 막아내는 중' + P],
+    v: '작은 나라가 강대국의 압력을 안의 결속으로 버팁니다. 체제 점수는 내리고 대외 점수는 올려 합계는 그대로입니다.' },
+];
+const gradeOf = t => t >= 17 ? 'S' : t >= 14 ? 'A' : t >= 11 ? 'B' : t >= 8 ? 'C' : 'D';
+N.forEach((d, i) => { d.i = i; d.tot = d.s.reduce((a, b) => a + b, 0); d.g = gradeOf(d.tot); });
+const ranked = [...N].sort((a, b) => b.tot - a.tot || a.i - b.i);
+const $ = s => document.querySelector(s);
+const BANG = { S: 4, A: 3, B: 2, C: 1 };
+const TIERS = [['S', '극한', '17–20'], ['A', '심각', '14–16'], ['B', '위태', '11–13'], ['C', '불안정', '8–10']];
+
+$('#metaCount').textContent = TIERS.map(([g]) => `${g} ${N.filter(d => d.g === g).length}`).join(' · ');
+$('#regBody').innerHTML = ranked.map(d => `<tr>
+  <td><span class="chip g-${d.g}">${d.g}</span></td><td class="nm">${d.n}</td>
+  ${d.s.map(v => `<td class="ax"><i class="v${v}">${v}</i></td>`).join('')}
+  <td class="tot">${d.tot}</td><td class="tr">${d.t}</td></tr>`).join('');
+
+function dia(s, g) {
+  const p = s.map(v => v / 5 * 36);
+  return `<svg viewBox="-42 -42 84 84" role="img" aria-label="${AX.map((a, j) => a + ' ' + s[j]).join(', ')}">
+    <polygon points="0,-36 36,0 0,36 -36,0" fill="none" stroke="var(--line-2)" stroke-width="1"/>
+    <polygon points="0,-21.6 21.6,0 0,21.6 -21.6,0" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <path d="M0-36V36M-36 0H36" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <polygon points="0,${-p[0]} ${p[1]},0 0,${p[2]} ${-p[3]},0" fill="var(--${g})" fill-opacity=".38" stroke="var(--${g})" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+$('#files').innerHTML = TIERS.map(([g, ko, r]) => `<div class="band g-${g}">
+  <div class="band-title"><b>${g}</b><h3>${ko}</h3><i class="bang" aria-hidden="true">${'!'.repeat(BANG[g])}</i><span>${r}점</span></div>
+  ${ranked.filter(d => d.g === g).map(d => `<article class="file">
+    <div class="file-key"><div class="tot">${d.tot}<small> / 20</small></div>${dia(d.s, g)}<div class="trend">${d.t}</div></div>
+    <div class="file-main">
+      <div class="file-head"><h4>${d.n}</h4><span class="motif">${d.motif}</span></div>
+      <div class="tags">${d.tags.map(t => `<span>${t}</span>`).join('')}</div>
+      <div class="meters">${d.s.map((v, j) => `<div class="meter" style="--hc:var(--h${v})"><b>${AX[j]}</b><div class="pp" role="img" aria-label="${v}점">${[1, 2, 3, 4, 5].map(k => `<i${k <= v ? ' class="on"' : ''}></i>`).join('')}</div><span>${d.why[j]}</span></div>`).join('')}</div>
+      <ul class="facts">${d.facts.map(f => `<li>${f}</li>`).join('')}</ul>
+      <p class="verdict">${d.v}</p>
+    </div>
+  </article>`).join('')}
+</div>`).join('');
+</script>

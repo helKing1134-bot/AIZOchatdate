@@ -2,343 +2,547 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Barlow+Condensed:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one-screen-per-idea infographic. Hero stats, axis averages, ranked totals, nation x axis heatmap (sortable, doubles as the table view), quadrant, crisis exports, trends. Charts use the validated danger ramps (amber > red > magenta); text stays in ink tokens. */
+/* Layout: a tactical threat board on one dark ground. Hero carries the grade scale with every nation plotted on it; then a tier board of nation cards (diamond radar + 20-pip total), axis gauges beside a sortable heatmap, a crosshair matrix of crisis types, a link map of cross-border crises, a timeline, and field dispatches. Single dark theme by choice: hazard colors need the dark ground. */
 :root {
-  --bg: #f4f3ee;
-  --surface: #fcfcfb;
-  --grid: #e1e0d9;
-  --ink: #0b0b0b;
-  --ink-2: #52514e;
-  --ink-3: #898781;
-  --line: #dedcd3;
-  --stamp: #b3302c;
-  --g-S: #8e1265; --g-A: #c21f32; --g-B: #e05a2e; --g-C: #f0a04b;
-  --gt-S: #ffffff; --gt-A: #ffffff; --gt-B: #0b0b0b; --gt-C: #0b0b0b;
-  --h1: #f0a04b; --h2: #e8763a; --h3: #d94a30; --h4: #b81c35; --h5: #8a1163;
-  --h1t: #0b0b0b; --h2t: #0b0b0b; --h3t: #0b0b0b; --h4t: #ffffff; --h5t: #ffffff;
-  --tip-bg: #16181a; --tip-ink: #f0efec; --tip-2: #c3c2b7;
-  --display: "Noto Serif KR", "Nanum Myeongjo", serif;
-  --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: dark;
+  --bg: #000000; --panel: #0b0b0b; --raise: #171717; --line: #2b2b2b; --line-2: #4a4a4a;
+  --ink: #f4f4ef; --ink-2: #b9b9b1; --ink-3: #87877f;
+  /* hazard ramp from the user's reference: yellow > orange > red > magenta on black. Grade letters and ! marks repeat the level, so it is never color alone */
+  --C: #ffc400; --B: #ff7a00; --A: #f00000; --S: #c400b4;
+  --tC: #000000; --tB: #000000; --tA: #000000; --tS: #f4f4ef;
+  --h1: #5e4b00; --h2: #ffc400; --h3: #ff7a00; --h4: #f00000; --h5: #c400b4;
+  --ht1: #f4f4ef; --ht2: #000000; --ht3: #000000; --ht4: #000000; --ht5: #f4f4ef;
+  --display: "Black Han Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111110; --surface: #1a1a19; --grid: #2c2c2a; --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --line: #2f302d; --stamp: #e06a62;
-    --g-S: #ff6cc0; --g-A: #f2505a; --g-B: #c24a26; --g-C: #8f4c17;
-    --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #f0efec; --gt-C: #f0efec;
-    --h1: #8f4c17; --h2: #b8501f; --h3: #e0503a; --h4: #f8606e; --h5: #ff7fcb;
-    --h1t: #f0efec; --h2t: #f0efec; --h3t: #0b0b0b; --h4t: #0b0b0b; --h5t: #0b0b0b;
-    --tip-bg: #f0efec; --tip-ink: #0b0b0b; --tip-2: #52514e;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111110; --surface: #1a1a19; --grid: #2c2c2a; --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --line: #2f302d; --stamp: #e06a62;
-  --g-S: #ff6cc0; --g-A: #f2505a; --g-B: #c24a26; --g-C: #8f4c17;
-  --gt-S: #0b0b0b; --gt-A: #0b0b0b; --gt-B: #f0efec; --gt-C: #f0efec;
-  --h1: #8f4c17; --h2: #b8501f; --h3: #e0503a; --h4: #f8606e; --h5: #ff7fcb;
-  --h1t: #f0efec; --h2t: #f0efec; --h3t: #0b0b0b; --h4t: #0b0b0b; --h5t: #0b0b0b;
-  --tip-bg: #f0efec; --tip-ink: #0b0b0b; --tip-2: #52514e;
-  color-scheme: dark;
-}
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.6; }
-.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-h1, h2 { font-family: var(--display); margin: 0; text-wrap: balance; }
-p { margin: 0; }
-a { color: var(--ink); text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
-.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stamp); }
+body {
+  background-color: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.6;
+  background-image: linear-gradient(rgba(244,244,239,.028) 1px, transparent 1px), linear-gradient(90deg, rgba(244,244,239,.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+a { color: var(--ink); text-decoration-color: var(--S); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.g-S { --g: var(--S); --gt: var(--tS); } .g-A { --g: var(--A); --gt: var(--tA); } .g-B { --g: var(--B); --gt: var(--tB); } .g-C { --g: var(--C); --gt: var(--tC); }
+.chip { display: inline-grid; place-items: center; min-width: 1.4rem; height: 1.3rem; padding: 0 .3rem; background: var(--g); color: var(--gt); font-family: var(--cond); font-weight: 700; font-size: .95rem; line-height: 1; }
 
-.hero { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 2.8rem); padding-bottom: 1.6rem; }
-.hero h1 { font-size: clamp(2rem, 5.6vw, 3.3rem); font-weight: 900; margin-top: .45rem; }
-.hero .lede { margin-top: .7rem; color: var(--ink-2); max-width: 40em; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; margin-top: 1.4rem; }
-.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: .85rem 1rem; display: grid; gap: .1rem; }
-.stat .big { font-family: var(--display); font-size: 2rem; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.stat .lab { font-size: .82rem; color: var(--ink-2); }
+/* hero */
+.hero { position: relative; margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 2.6rem); padding-bottom: 2.4rem; border-bottom: 1px solid var(--line);
+  background: radial-gradient(110% 90% at 88% 0%, rgba(196,0,180,.17), transparent 58%), radial-gradient(80% 80% at 0% 0%, rgba(240,0,0,.14), transparent 60%), var(--bg); }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 6px; background: repeating-linear-gradient(-45deg, var(--S) 0 10px, transparent 10px 20px); }
+.kicker { display: flex; align-items: center; gap: .6rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .18em; color: var(--ink-2); }
+.kicker::before { content: ""; width: .6rem; height: .6rem; background: var(--S); transform: rotate(45deg); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 1.6rem 2.4rem; align-items: end; margin-top: 1rem; }
+.hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.7rem, 8.6vw, 5.6rem); line-height: 1.02; }
+.hero .ghost { display: block; margin-top: .5rem; font-family: var(--cond); font-weight: 800; font-size: clamp(1rem, 2.7vw, 1.75rem); line-height: 1.1; letter-spacing: .08em; color: transparent; -webkit-text-stroke: 1px var(--line-2); }
+.hero .lede { margin-top: 1rem; color: var(--ink-2); max-width: 36em; }
+.hud { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+.read { border-left: 3px solid var(--line-2); padding: .3rem .8rem .4rem; background: linear-gradient(90deg, rgba(244,244,239,.05), transparent); display: grid; }
+.read.hot { border-left-color: var(--S); }
+.read b { font-family: var(--cond); font-weight: 700; font-size: 2.7rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.read b.ko { font-family: var(--display); font-weight: 400; font-size: 2.1rem; line-height: 1.25; }
+.read span { font-size: .78rem; color: var(--ink-2); }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1.2rem 1.2rem 1.3rem; margin-top: 1.1rem; }
-.card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .4rem 1rem; margin-bottom: 1rem; }
-.card-head h2 { font-size: clamp(1.15rem, 2.6vw, 1.4rem); }
-.card-head .sub { font-size: .85rem; color: var(--ink-2); }
-.legend { display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-size: .8rem; color: var(--ink-2); }
-.legend .sw { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; vertical-align: -.1rem; margin-right: .3rem; }
+.dist { margin-top: 2.2rem; }
+.dist-notes { display: flex; justify-content: space-between; gap: 1rem; font-size: .8rem; color: var(--ink-2); }
+.dist-notes span:last-child { text-align: right; }
+.dist-plot { position: relative; height: 112px; }
+.dstack { position: absolute; bottom: 9px; transform: translateX(-50%); display: flex; flex-direction: column-reverse; gap: 6px; }
+.ddot { position: relative; width: 13px; height: 13px; background: var(--g); transform: rotate(45deg); }
+.ddot::after { content: ""; position: absolute; inset: -5px; }
+.ddot.hot { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink); }
+.zones { display: flex; height: 28px; }
+.zone { flex: var(--w) 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: .4em; background: var(--g); color: var(--gt); font-family: var(--cond); font-weight: 700; font-size: 1.05rem; letter-spacing: .05em; box-shadow: inset -2px 0 0 var(--bg); white-space: nowrap; }
+.zone small { font-family: var(--body); font-weight: 500; font-size: .74rem; letter-spacing: 0; }
+.zone.D { background: var(--raise); color: var(--ink-3); }
+.zone.S { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,.32) 0 8px, transparent 8px 16px); box-shadow: 0 0 22px rgba(196,0,180,.4); }
+.zticks { position: relative; height: 1.4rem; }
+.zticks span { position: absolute; top: .3rem; transform: translateX(-50%); font-family: var(--mono); font-size: .7rem; color: var(--ink-3); }
 
-/* axis tiles */
-.axis-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; }
-.atile { border: 1px solid var(--line); border-radius: 6px; padding: .8rem .9rem; display: grid; gap: .35rem; }
-.atile .row1 { display: flex; align-items: baseline; justify-content: space-between; }
-.atile b { font-family: var(--display); font-size: 1.05rem; }
-.atile .avg { font-family: var(--mono); font-size: 1.35rem; font-weight: 500; }
-.atile .avg small { font-size: .75rem; color: var(--ink-3); }
-.atile.top { border-color: var(--g-B); }
-.meter { height: 6px; border-radius: 3px; background: var(--grid); overflow: hidden; }
-.meter i { display: block; height: 100%; border-radius: 3px; background: var(--g-B); }
-.atile .five { font-size: .8rem; color: var(--ink-2); }
+/* sections */
+main { display: grid; gap: 3.4rem; padding-block: 3.2rem 2.4rem; }
+main > section { min-width: 0; }
+.sec-head { display: flex; align-items: center; gap: .8rem; }
+.sec-head::before { content: ""; flex: none; width: .7rem; height: .7rem; background: var(--S); transform: rotate(45deg); }
+.sec-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 3.8vw, 2.1rem); line-height: 1.15; }
+.sec-head .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .16em; color: var(--ink-3); white-space: nowrap; }
+.sec-sub { margin-top: .4rem; color: var(--ink-2); font-size: .9rem; max-width: 46em; }
+.sec-body { margin-top: 1.3rem; }
+.panel { position: relative; background: var(--panel); border: 1px solid var(--line); padding: 1.1rem 1.1rem 1.2rem; }
+.panel::after { content: ""; position: absolute; top: -1px; right: -1px; width: 20px; height: 20px; background: linear-gradient(to bottom left, var(--bg) calc(50% - 1px), var(--line) calc(50% - 1px) 50%, transparent 50%); }
+.panel > h3 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; margin-bottom: .8rem; }
 
-/* ranked bars */
-.plot { --lab: 6.2em; --tr: 1.4em; --gap: .7rem; position: relative; font-size: .88rem; padding-top: 1.3rem; }
-.plot .over { position: absolute; top: 0; bottom: 1.4rem; left: calc(var(--lab) + var(--gap)); right: calc(var(--tr) + var(--gap)); pointer-events: none; }
-.over .gl { position: absolute; top: 1.3rem; bottom: 0; width: 1px; background: var(--grid); }
-.over .th { position: absolute; top: 1.05rem; bottom: 0; border-left: 1px dashed var(--ink-3); }
-.over .thl { position: absolute; top: 0; transform: translateX(-50%); font-family: var(--mono); font-size: .7rem; color: var(--ink-3); white-space: nowrap; }
-.brow { position: relative; display: grid; grid-template-columns: var(--lab) minmax(0, 1fr) var(--tr); align-items: center; column-gap: var(--gap); height: 26px; border-radius: 4px; outline-offset: 2px; }
-.brow .nm { text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
-.brow .trk { position: relative; height: 14px; }
-.brow .bar { position: absolute; left: 0; top: 0; height: 14px; border-radius: 0 4px 4px 0; transition: opacity .15s; }
-.brow .val { position: absolute; top: -1px; font-family: var(--mono); font-size: .78rem; color: var(--ink-2); padding-left: .35rem; }
-.brow .tr { color: var(--ink-3); text-align: center; }
-.plot:hover .brow:not(.hot) .bar { opacity: .4; }
-.ticks { position: relative; height: 1.4rem; margin-left: calc(var(--lab) + var(--gap)); margin-right: calc(var(--tr) + var(--gap)); }
-.ticks span { position: absolute; top: .25rem; transform: translateX(-50%); font-family: var(--mono); font-size: .72rem; color: var(--ink-3); }
+/* tier board */
+.legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 2rem; margin-top: 1.1rem; font-size: .84rem; color: var(--ink-2); }
+.legend-row svg { width: 190px; height: 116px; flex: none; }
+.legend-row ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .3rem; }
+.legend-row .pipdemo { display: inline-grid; grid-template-columns: repeat(6, 9px); gap: 2px; vertical-align: middle; margin-right: .4rem; }
+.legend-row .pipdemo i { height: 5px; background: var(--line-2); } .legend-row .pipdemo i.on { background: var(--A); }
+.tiers { display: grid; gap: .9rem; margin-top: 1.2rem; }
+.tier { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: .8rem; padding: .9rem .8rem; border: 1px solid color-mix(in srgb, var(--g) 60%, #000); }
+.tier::before, .tier::after { content: ""; position: absolute; width: 150px; max-width: 40%; height: 7px; background: repeating-linear-gradient(-45deg, var(--g) 0 6px, transparent 6px 12px); pointer-events: none; }
+.tier::before { top: -1px; right: -1px; } .tier::after { bottom: -1px; left: -1px; }
+.tier-S { box-shadow: 0 0 28px rgba(196,0,180,.28); }
+.tier-key { display: grid; }
+.tier-S .tier-key { filter: drop-shadow(0 0 14px rgba(196,0,180,.5)); }
+.tier-key > div { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; padding: .7rem .4rem; background: var(--g); color: var(--gt); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+.tier-S .tier-key > div { background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,.32) 0 8px, transparent 8px 16px); }
+.tier-key b { font-family: var(--cond); font-weight: 800; font-size: 3.8rem; line-height: .9; }
+.tier-key span { font-family: var(--display); font-size: 1rem; line-height: 1.2; }
+.tier-key small { font-family: var(--mono); font-size: .7rem; }
+.tier-key .bang { font-family: var(--cond); font-weight: 800; font-style: italic; font-size: 1.5rem; line-height: 1; letter-spacing: .1em; }
+.tier-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(188px, 1fr)); gap: .6rem; }
+.ncard { position: relative; background: var(--panel); border: 1px solid color-mix(in srgb, var(--g) 38%, var(--line)); padding: .75rem .8rem .8rem; display: grid; gap: .4rem; align-content: start; transition: border-color .15s, transform .15s; }
+.ncard::before { content: ""; position: absolute; top: -1px; left: -1px; border-top: 15px solid var(--g); border-right: 15px solid transparent; }
+.ncard.hot, .ncard:focus-visible { border-color: var(--g); transform: translateY(-2px); }
+.nc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: .4rem; padding-left: .5rem; }
+.ncard h3 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; line-height: 1.2; }
+.ncard .motif { font-size: .72rem; color: var(--ink-3); }
+.dia { width: 54px; height: 54px; flex: none; }
+.nc-num { display: flex; align-items: baseline; gap: .45rem; }
+.nc-num b { font-family: var(--cond); font-weight: 700; font-size: 2.1rem; line-height: .9; font-variant-numeric: tabular-nums; }
+.nc-num small { font-family: var(--mono); font-size: .68rem; color: var(--ink-3); }
+.nc-tr { font-size: .76rem; color: var(--ink-2); line-height: 1.4; min-height: 2.8em; }
+.pips { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 2px; }
+.pips i { height: 5px; background: var(--line); } .pips i.on { background: var(--g); }
 
-/* heatmap */
-.sorter { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-bottom: .8rem; font-size: .82rem; color: var(--ink-2); }
-.sorter button { font: inherit; font-size: .82rem; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: .2rem .75rem; cursor: pointer; }
-.sorter button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); font-weight: 500; }
-.heat-wrap { overflow-x: auto; }
-.heat { border-collapse: separate; border-spacing: 2px; width: 100%; min-width: 300px; }
-.heat th { font-weight: 500; font-size: .78rem; color: var(--ink-2); padding: .25rem .35rem; text-align: center; }
-.heat th.sorted { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
-.heat th[scope="row"] { text-align: right; font-size: .86rem; color: var(--ink); white-space: nowrap; padding-right: .6rem; font-weight: 400; }
-.heat td.cell { height: 30px; text-align: center; font-family: var(--mono); font-size: .9rem; border-radius: 3px; }
-.heat td.cell:focus-visible, .brow:focus-visible, .qn:focus-visible { outline: 2px solid var(--ink); }
-.heat td.cell.hot { box-shadow: inset 0 0 0 2px var(--ink); }
-.v1 { background: var(--h1); color: var(--h1t); } .v2 { background: var(--h2); color: var(--h2t); } .v3 { background: var(--h3); color: var(--h3t); } .v4 { background: var(--h4); color: var(--h4t); } .v5 { background: var(--h5); color: var(--h5t); }
-.heat td.tot { text-align: center; font-family: var(--mono); font-size: .86rem; color: var(--ink); white-space: nowrap; padding-left: .4rem; }
-.chip { display: inline-grid; place-items: center; min-width: 1.45rem; height: 1.25rem; padding: 0 .3rem; border-radius: 3px; font-family: var(--mono); font-size: .74rem; font-weight: 500; margin-left: .3rem; }
-.chip.S { background: var(--g-S); color: var(--gt-S); } .chip.A { background: var(--g-A); color: var(--gt-A); } .chip.B { background: var(--g-B); color: var(--gt-B); } .chip.C { background: var(--g-C); color: var(--gt-C); }
+/* gauges + heatmap */
+.duo { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 1rem; align-items: start; }
+.gauges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem .6rem; }
+.gtile { display: grid; justify-items: center; text-align: center; gap: .1rem; }
+.gtile svg { width: 100%; max-width: 150px; height: auto; }
+.gtile b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
+.gtile b em { font-style: normal; font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; color: var(--tS); background: var(--S); padding: .05rem .3rem; margin-left: .3rem; vertical-align: .15em; }
+.gtile span { font-size: .74rem; color: var(--ink-2); line-height: 1.4; }
+.sorter { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-bottom: .8rem; font-size: .8rem; color: var(--ink-2); }
+.sorter button { font: inherit; color: var(--ink-2); background: transparent; border: 1px solid var(--line-2); padding: .15rem .7rem; cursor: pointer; }
+.sorter button[aria-pressed="true"] { color: var(--bg); background: var(--ink); border-color: var(--ink); font-weight: 600; }
 .seq { display: inline-flex; gap: 2px; vertical-align: middle; margin: 0 .35rem; }
-.seq i { width: 1.4rem; height: .8rem; border-radius: 2px; display: inline-grid; place-items: center; font-style: normal; font-family: var(--mono); font-size: .62rem; }
+.seq i { width: 1.2rem; height: .75rem; }
+.heat-wrap { overflow-x: auto; }
+.heat { border-collapse: separate; border-spacing: 2px; width: 100%; min-width: 290px; }
+.heat th { font-weight: 500; font-size: .76rem; color: var(--ink-2); padding: .2rem .3rem; text-align: center; }
+.heat th.sorted { color: var(--ink); box-shadow: inset 0 -2px 0 var(--S); }
+.heat th[scope="row"] { text-align: right; font-size: .84rem; font-weight: 400; color: var(--ink); white-space: nowrap; padding-right: .55rem; }
+.heat td.cell { height: 28px; text-align: center; font-family: var(--cond); font-weight: 700; font-size: 1.05rem; }
+.heat td.cell.hot { box-shadow: inset 0 0 0 2px var(--ink); }
+.v1 { background: var(--h1); color: var(--ht1); } .v2 { background: var(--h2); color: var(--ht2); } .v3 { background: var(--h3); color: var(--ht3); } .v4 { background: var(--h4); color: var(--ht4); } .v5 { background: var(--h5); color: var(--ht5); }
+.heat td.tot { text-align: left; white-space: nowrap; padding-left: .45rem; font-family: var(--cond); font-weight: 700; font-size: 1.05rem; }
+.heat td.tot .chip { margin-left: .35rem; font-size: .85rem; height: 1.15rem; min-width: 1.2rem; }
 
-/* quadrant */
-.quad { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6rem; }
-.qcell { border: 1px solid var(--line); border-radius: 6px; padding: .8rem .9rem; display: grid; gap: .55rem; align-content: start; min-height: 9rem; }
-.qcell h3 { margin: 0; font-family: var(--display); font-size: 1.02rem; }
-.qcell .rule { font-family: var(--mono); font-size: .72rem; color: var(--ink-3); }
-.qcell .desc { font-size: .84rem; color: var(--ink-2); }
+/* crosshair matrix */
+.quad-wrap { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: .4rem; }
+.q-y, .q-x { font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; color: var(--ink-3); text-align: center; }
+.q-y { writing-mode: vertical-rl; transform: rotate(180deg); }
+.q-x { grid-column: 2; }
+.quad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: var(--panel); border: 1px solid var(--line); }
+.qcell { padding: .9rem; min-height: 9.5rem; display: grid; gap: .55rem; align-content: start; }
+.qcell:nth-child(odd) { border-right: 1px dashed var(--line-2); }
+.qcell:nth-child(-n+2) { border-bottom: 1px dashed var(--line-2); }
+.qcell.both { background: repeating-linear-gradient(-45deg, rgba(196,0,180,.075) 0 6px, transparent 6px 12px); }
+.qcell h3 { font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
+.qcell .rule { font-family: var(--mono); font-size: .68rem; color: var(--ink-3); }
+.qcell .desc { font-size: .82rem; color: var(--ink-2); }
 .qlist { display: flex; flex-wrap: wrap; gap: .35rem; }
-.qn { display: inline-flex; align-items: center; gap: .35rem; border: 1px solid var(--line); border-radius: 4px; padding: .15rem .5rem; font-size: .84rem; }
-.qn .dot { width: .6rem; height: .6rem; border-radius: 2px; }
-.qn small { font-family: var(--mono); font-size: .7rem; color: var(--ink-3); }
-.quad-axes { display: flex; justify-content: space-between; gap: 1rem; margin-top: .6rem; font-size: .78rem; color: var(--ink-3); font-family: var(--mono); }
+.qn { display: inline-flex; align-items: center; gap: .35rem; background: var(--raise); border: 1px solid var(--line-2); padding: .12rem .5rem; font-size: .84rem; }
+.qn.hot { border-color: var(--ink); }
+.dot { flex: none; width: .55rem; height: .55rem; background: var(--g); transform: rotate(45deg); }
+.qn small { font-family: var(--mono); font-size: .68rem; color: var(--ink-3); }
 
-/* flows */
-.flows { display: grid; gap: .55rem; }
-.flow { display: grid; grid-template-columns: minmax(0, 15rem) 2.2rem minmax(0, 8rem) minmax(0, 1fr); align-items: center; gap: .6rem; border-bottom: 1px solid var(--line); padding-bottom: .55rem; }
-.flow:last-child { border-bottom: 0; padding-bottom: 0; }
-.flow .src { display: flex; flex-wrap: wrap; gap: .3rem; justify-content: flex-end; }
-.flow .arrow { height: 2px; background: var(--ink-3); position: relative; }
-.flow .arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border-left: 7px solid var(--ink-3); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
-.flow .how { font-size: .86rem; color: var(--ink-2); }
-.pill { display: inline-flex; align-items: center; gap: .3rem; border: 1px solid var(--line); border-radius: 4px; padding: .1rem .5rem; font-size: .84rem; white-space: nowrap; }
-.pill .dot { width: .55rem; height: .55rem; border-radius: 2px; }
-.pill.gone { border-style: dashed; color: var(--ink-2); }
+/* link map */
+.fl-heads, .flowmap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(44px, .8fr) minmax(0, 1fr); }
+.fl-heads { font-family: var(--mono); font-size: .7rem; letter-spacing: .14em; color: var(--ink-3); margin-bottom: .5rem; }
+.fl-heads span:first-child { text-align: right; } .fl-heads span:last-child { grid-column: 3; }
+.flowmap { position: relative; }
+.fl-col { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
+.fl-col.dst { grid-column: 3; }
+.node { display: flex; align-items: center; gap: .45rem; min-height: 2.5rem; padding: .3rem .7rem; background: var(--raise); border: 1px solid var(--line-2); font-size: .9rem; line-height: 1.25; cursor: default; }
+.src .node { flex-direction: row-reverse; text-align: right; }
+.node small { display: block; font-size: .7rem; color: var(--ink-3); }
+.node.gone { border-style: dashed; }
+.node.on { border-color: var(--ink); }
+.links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.links path { fill: none; stroke: var(--ink-3); stroke-width: 2; transition: opacity .15s; }
+.links path.dash { stroke-dasharray: 5 5; }
+.flowmap.dim .links path:not(.on) { opacity: .18; }
+.links path.on { stroke: var(--ink); stroke-width: 3; }
+.flow-notes { list-style: none; margin: 1.2rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1.6rem; font-size: .85rem; color: var(--ink-2); }
+.flow-notes li { padding-left: .8rem; border-left: 2px solid var(--line-2); cursor: default; }
+.flow-notes li.on { border-left-color: var(--ink); color: var(--ink); }
+.flow-notes b { color: var(--ink); font-weight: 600; display: block; }
+
+/* timeline */
+.tl { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border-top: 2px solid var(--line-2); }
+.ev { position: relative; padding: 1.1rem .8rem 0 0; display: grid; gap: .3rem; align-content: start; }
+.ev::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; background: var(--g, var(--ink-3)); transform: rotate(45deg); }
+.ev .yr { font-family: var(--cond); font-weight: 700; font-size: 1.8rem; line-height: 1; }
+.ev .yr.ko { font-family: var(--display); font-weight: 400; font-size: 1.3rem; line-height: 1.38; }
+.ev .who { font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; color: var(--ink-3); }
+.ev p { font-size: .82rem; color: var(--ink-2); line-height: 1.5; }
+
+/* dispatches */
+.disps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.disp { background: var(--panel); border: 1px solid var(--line); border-top: 2px dashed var(--line-2); padding: 1rem 1rem 1.1rem; display: grid; gap: .7rem; align-content: start; }
+.disp header { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.disp .stamp { font-family: var(--mono); font-size: .66rem; letter-spacing: .16em; color: var(--ink); border: 1px solid var(--S); padding: .05rem .4rem; transform: rotate(-4deg); }
+.disp h3 { font-family: var(--display); font-weight: 400; font-size: 1.35rem; line-height: 1.1; }
+.disp .chg { margin-left: auto; display: inline-flex; align-items: center; gap: .35rem; color: var(--ink-3); font-family: var(--mono); font-size: .8rem; }
+.delta { display: flex; flex-wrap: wrap; gap: .4rem; }
+.delta span { font-family: var(--mono); font-size: .76rem; color: var(--ink-2); background: var(--raise); padding: .1rem .5rem; }
+.delta b { color: var(--ink); font-weight: 500; }
+.disp ul { margin: 0; padding-left: 1.05rem; display: grid; gap: .3rem; font-size: .86rem; color: var(--ink-2); }
+.disp ul b { color: var(--ink); font-weight: 600; }
+.disp .verdict { font-size: .86rem; border-left: 2px solid var(--S); padding-left: .7rem; }
 
 /* trends */
-.trends { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
-.trend { border: 1px solid var(--line); border-radius: 6px; padding: .8rem .9rem; display: grid; gap: .5rem; align-content: start; }
-.trend h3 { margin: 0; font-family: var(--display); font-size: 1rem; }
-.trend ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .35rem; font-size: .86rem; }
-.trend li b { font-weight: 500; }
-.trend li span { color: var(--ink-2); }
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; }
+.lane { display: grid; gap: .6rem; align-content: start; }
+.lane-head { display: flex; align-items: center; gap: .7rem; }
+.lane-head svg { width: 2.6rem; height: 2.6rem; flex: none; }
+.lane-head h3 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+.lane ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .35rem; font-size: .86rem; }
+.lane li { display: grid; grid-template-columns: 5.4em minmax(0, 1fr); gap: .5rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
+.lane li b { font-weight: 600; } .lane li span { color: var(--ink-2); }
 
-footer { padding-block: 1.6rem 2.6rem; font-size: .82rem; color: var(--ink-2); display: grid; gap: .3rem; }
+footer { border-top: 1px solid var(--line); padding-block: 1.4rem 2.6rem; font-size: .82rem; color: var(--ink-2); }
+footer .wrap { display: grid; gap: .3rem; }
 
-#tip { position: fixed; z-index: 10; pointer-events: none; max-width: 17rem; background: var(--tip-bg); color: var(--tip-ink); border-radius: 6px; padding: .6rem .75rem; font-size: .82rem; line-height: 1.5; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
-#tip[hidden] { display: none; }
-#tip .t1 { display: flex; align-items: center; gap: .2rem; font-weight: 700; font-size: .9rem; }
-#tip .ax { display: grid; grid-template-columns: repeat(4, auto); gap: .1rem .7rem; margin-top: .3rem; font-family: var(--mono); font-size: .76rem; }
-#tip .ax span { color: var(--tip-2); }
-#tip .ax b { color: var(--tip-ink); font-weight: 500; }
-#tip .m { color: var(--tip-2); margin-top: .3rem; }
+#tip { position: fixed; z-index: 10; pointer-events: none; max-width: 19rem; background: var(--ink); color: var(--bg); padding: .6rem .75rem; font-size: .8rem; line-height: 1.5; box-shadow: 0 8px 26px rgba(0,0,0,.5); }
+#tip .t1 { display: flex; align-items: center; gap: .4rem; font-family: var(--display); font-size: 1rem; }
+#tip .m { color: #444444; }
+#tip dl { margin: .35rem 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .1rem .6rem; }
+#tip dt { font-family: var(--mono); font-size: .74rem; white-space: nowrap; } #tip dd { margin: 0; color: #444444; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-@media (max-width: 760px) {
-  .stats, .axis-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .trends { grid-template-columns: minmax(0, 1fr); }
-  .plot { --lab: 4.6em; --gap: .5rem; font-size: .82rem; }
-  .flow { grid-template-columns: minmax(0, 1fr) 1.8rem minmax(0, 1fr); }
-  .flow .src { justify-content: flex-start; }
-  .flow .how { grid-column: 1 / -1; }
+@media (max-width: 900px) {
+  .hero-grid, .duo { grid-template-columns: minmax(0, 1fr); }
+  .tl { grid-template-columns: minmax(0, 1fr); border-top: 0; border-left: 2px solid var(--line-2); }
+  .ev { padding: 0 0 1.2rem 1.2rem; } .ev::before { top: .4rem; left: -7px; }
+  .disps, .lanes { grid-template-columns: minmax(0, 1fr); }
+  .flow-notes { grid-template-columns: minmax(0, 1fr); }
 }
-@media (max-width: 460px) {
-  .quad { grid-template-columns: minmax(0, 1fr); }
-  .card { padding: 1rem .85rem 1.1rem; }
-  .heat th[scope="row"] { font-size: .78rem; padding-right: .3rem; }
-  .heat td.cell { font-size: .82rem; height: 28px; }
-  .heat td.tot { font-size: .78rem; padding-left: .2rem; }
-  .heat .chip { margin-left: .2rem; min-width: 1.2rem; }
+@media (max-width: 560px) {
+  main { gap: 2.8rem; }
+  .dist-notes { flex-direction: column; gap: .1rem; } .dist-notes span:last-child { text-align: left; }
+  .tier { padding: .8rem .6rem; }
+  .zone small { display: none; }
+  .tier { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+  .tier-key > div { flex-direction: row; justify-content: flex-start; gap: .7rem; padding: .35rem 1rem; }
+  .tier-key b { font-size: 2.3rem; }
+  .tier-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .ncard { padding: .65rem .6rem .7rem; } .ncard h3 { font-size: 1.02rem; } .dia { width: 44px; height: 44px; } .nc-top { padding-left: .35rem; }
+  .panel { padding: .9rem .75rem 1rem; }
+  .qcell { padding: .7rem .6rem; } .qn small { display: none; }
+  .node { padding: .3rem .5rem; font-size: .82rem; }
+  .sec-head .tag { display: none; }
 }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">명일방주 · 테라 정세</div>
-    <h1>테라 위기 등급, 한눈에</h1>
-    <p class="lede">테라 16개국의 위기를 재앙·체제·차별·대외 네 축(각 1~5점)으로 매겼습니다. 막대와 칸 위에 마우스를 올리거나 눌러 보면 점수와 근거가 나옵니다.</p>
-    <div class="stats">
-      <div class="stat"><span class="big">16</span><span class="lab">평가한 나라 (보류 3 · 멸망 1 제외)</span></div>
-      <div class="stat"><span class="big">2</span><span class="lab">S 등급: 볼리바르, 카즈델</span></div>
-      <div class="stat"><span class="big">18</span><span class="lab">최고점 · 볼리바르 (20점 만점)</span></div>
-      <div class="stat"><span class="big" id="topAxis">차별</span><span class="lab" id="topAxisLab">테라에서 가장 흔한 위기</span></div>
+    <div class="kicker">TERRA THREAT INDEX · 명일방주</div>
+    <div class="hero-grid">
+      <div>
+        <h1>테라 위기 등급<span class="ghost">CATASTROPHE / REGIME / PREJUDICE / WAR</span></h1>
+        <p class="lede">테라 16개국의 위기를 재앙·체제·차별·대외 네 축(각 1~5점)으로 매겼습니다. 마름모와 카드, 칸을 누르거나 마우스를 올리면 점수와 근거가 나옵니다.</p>
+      </div>
+      <div class="hud">
+        <div class="read"><b id="hudN">16</b><span>평가한 나라 (보류 3 · 멸망 1 제외)</span></div>
+        <div class="read hot"><b id="hudS">2</b><span>S 등급 · 볼리바르, 카즈델</span></div>
+        <div class="read"><b id="hudMax">18</b><span>최고점 · 볼리바르 (20점 만점)</span></div>
+        <div class="read"><b class="ko" id="hudAxis">차별</b><span id="hudAxisLab">가장 흔한 위기</span></div>
+      </div>
+    </div>
+    <div class="dist" aria-label="합계 점수 분포">
+      <div class="dist-notes"><span id="distL"></span><span id="distR"></span></div>
+      <div class="dist-plot" id="distPlot"></div>
+      <div class="zones">
+        <div class="zone D" style="--w:4">D</div>
+        <div class="zone g-C" style="--w:3">C <small>불안정</small></div>
+        <div class="zone g-B" style="--w:3">B <small>위태</small></div>
+        <div class="zone g-A" style="--w:3">A <small>심각</small></div>
+        <div class="zone g-S S" style="--w:4">S <small>극한</small></div>
+      </div>
+      <div class="zticks" id="zticks"></div>
     </div>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="card" aria-labelledby="h-axes">
-    <div class="card-head"><h2 id="h-axes">축별 평균</h2><span class="sub">16개국 평균 · 5점 만점</span></div>
-    <div class="axis-tiles" id="axisTiles"></div>
+  <section aria-labelledby="h-tier">
+    <div class="sec-head"><h2 id="h-tier">등급 보드</h2><span class="tag">TIER BOARD</span></div>
+    <p class="sec-sub">합계 점수로 나눈 등급입니다. 마름모는 네 축의 점수 모양이고, 아래 20칸 막대는 합계입니다.</p>
+    <div class="legend-row">
+      <svg viewBox="-95 -58 190 116" role="img" aria-label="마름모 읽는 법: 위 재앙, 오른쪽 체제, 아래 차별, 왼쪽 대외">
+        <polygon points="0,-40 40,0 0,40 -40,0" fill="none" stroke="var(--line-2)" stroke-width="1"/>
+        <polygon points="0,-24 24,0 0,24 -24,0" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <path d="M0-40V40M-40 0H40" stroke="var(--line)" stroke-width="1" fill="none"/>
+        <polygon points="0,-32 40,0 0,32 -40,0" fill="var(--S)" fill-opacity=".35" stroke="var(--S)" stroke-width="1.6"/>
+        <g fill="var(--ink-2)" font-size="11" font-family="IBM Plex Sans KR, sans-serif">
+          <text x="0" y="-46" text-anchor="middle">재앙</text><text x="46" y="4">체제</text><text x="0" y="54" text-anchor="middle">차별</text><text x="-46" y="4" text-anchor="end">대외</text>
+        </g>
+      </svg>
+      <ul>
+        <li>꼭짓점이 바깥에 닿으면 그 축이 5점입니다. 예시는 볼리바르(4·5·4·5).</li>
+        <li><span class="pipdemo"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>칸 하나가 1점, 모두 20칸</li>
+        <li>↗ 악화 · ↘ 완화 · → 유지 · ? 변수</li>
+      </ul>
+    </div>
+    <div class="tiers" id="tierRows"></div>
   </section>
 
-  <section class="card" aria-labelledby="h-bars">
-    <div class="card-head">
-      <h2 id="h-bars">위기 합계 순위</h2>
-      <div class="legend" aria-label="등급 범례">
-        <span><i class="sw" style="background:var(--g-S)"></i>S 17~20</span>
-        <span><i class="sw" style="background:var(--g-A)"></i>A 14~16</span>
-        <span><i class="sw" style="background:var(--g-B)"></i>B 11~13</span>
-        <span><i class="sw" style="background:var(--g-C)"></i>C 8~10</span>
-        <span>↗ 악화 · ↘ 완화 · → 유지 · ? 변수</span>
+  <section aria-labelledby="h-axes">
+    <div class="sec-head"><h2 id="h-axes">네 개의 축</h2><span class="tag">AXIS READOUT</span></div>
+    <p class="sec-sub">왼쪽은 16개국 평균이고, 오른쪽은 나라마다의 점수입니다. 정렬 기준을 바꿔 축별 순위를 볼 수 있습니다.</p>
+    <div class="sec-body duo">
+      <div class="panel"><h3>축별 평균</h3><div class="gauges" id="gauges"></div></div>
+      <div class="panel">
+        <div class="sorter" role="group" aria-label="정렬 기준">
+          <span>정렬</span>
+          <button type="button" id="sort-total" data-sort="-1" aria-pressed="true">합계</button>
+          <button type="button" id="sort-0" data-sort="0" aria-pressed="false">재앙</button>
+          <button type="button" id="sort-1" data-sort="1" aria-pressed="false">체제</button>
+          <button type="button" id="sort-2" data-sort="2" aria-pressed="false">차별</button>
+          <button type="button" id="sort-3" data-sort="3" aria-pressed="false">대외</button>
+          <span style="margin-left:auto">1<span class="seq"><i class="v1"></i><i class="v2"></i><i class="v3"></i><i class="v4"></i><i class="v5"></i></span>5</span>
+        </div>
+        <div class="heat-wrap">
+          <table class="heat" id="heat">
+            <thead><tr><th scope="col"><span class="sr">국가</span></th><th scope="col" data-col="0">재앙</th><th scope="col" data-col="1">체제</th><th scope="col" data-col="2">차별</th><th scope="col" data-col="3">대외</th><th scope="col" data-col="-1">합계</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="plot" id="plot">
-      <div class="over" id="over"></div>
-      <div id="bars"></div>
-      <div class="ticks" id="ticks"></div>
+  </section>
+
+  <section aria-labelledby="h-quad">
+    <div class="sec-head"><h2 id="h-quad">위기의 유형</h2><span class="tag">TYPE MATRIX</span></div>
+    <p class="sec-sub">세로는 재앙 점수(4점 이상이면 위), 가로는 사람이 만든 위기인 체제+차별+대외 합(9점 이상이면 오른쪽)입니다.</p>
+    <div class="sec-body quad-wrap">
+      <div class="q-y">재앙 높음 →</div>
+      <div class="quad" id="quad"></div>
+      <div class="q-x">인재(체제+차별+대외) 높음 →</div>
     </div>
   </section>
 
-  <section class="card" aria-labelledby="h-heat">
-    <div class="card-head">
-      <h2 id="h-heat">나라 × 위기 축</h2>
-      <div class="legend"><span>점수 1<span class="seq"><i class="v1"></i><i class="v2"></i><i class="v3"></i><i class="v4"></i><i class="v5"></i></span>5</span></div>
-    </div>
-    <div class="sorter" role="group" aria-label="정렬 기준">
-      <span>정렬</span>
-      <button type="button" data-sort="-1" aria-pressed="true">합계</button>
-      <button type="button" data-sort="0" aria-pressed="false">재앙</button>
-      <button type="button" data-sort="1" aria-pressed="false">체제</button>
-      <button type="button" data-sort="2" aria-pressed="false">차별</button>
-      <button type="button" data-sort="3" aria-pressed="false">대외</button>
-    </div>
-    <div class="heat-wrap">
-      <table class="heat" id="heat">
-        <thead><tr><th scope="col"><span class="visually-hidden">국가</span></th><th scope="col" data-col="0">재앙</th><th scope="col" data-col="1">체제</th><th scope="col" data-col="2">차별</th><th scope="col" data-col="3">대외</th><th scope="col" data-col="-1">합계</th></tr></thead>
-        <tbody></tbody>
-      </table>
+  <section aria-labelledby="h-flow">
+    <div class="sec-head"><h2 id="h-flow">국경을 넘은 위기</h2><span class="tag">LINK MAP</span></div>
+    <p class="sec-sub">어느 나라가 어느 나라의 위기에 손을 댔는지 이은 그림입니다. 나라나 설명에 마우스를 올리면 해당 선이 강조됩니다.</p>
+    <div class="sec-body panel">
+      <div class="fl-heads"><span>개입한 쪽</span><span>당한 쪽</span></div>
+      <div class="flowmap" id="flowmap">
+        <svg class="links" id="links" aria-hidden="true"></svg>
+        <ul class="fl-col src" id="flSrc"></ul>
+        <ul class="fl-col dst" id="flDst"></ul>
+      </div>
+      <ul class="flow-notes" id="flowNotes"></ul>
     </div>
   </section>
 
-  <section class="card" aria-labelledby="h-quad">
-    <div class="card-head"><h2 id="h-quad">위기의 유형</h2><span class="sub">재앙 4점 이상 / 인재(체제+차별+대외) 9점 이상으로 나눔</span></div>
-    <div class="quad" id="quad"></div>
-    <div class="quad-axes"><span>← 인재 낮음</span><span>인재 높음 →</span></div>
+  <section aria-labelledby="h-tl">
+    <div class="sec-head"><h2 id="h-tl">위기의 연표</h2><span class="tag">TERRA CALENDAR</span></div>
+    <p class="sec-sub">지금의 등급을 만든 사건을 테라력 순서로 늘어놓았습니다.</p>
+    <div class="sec-body tl">
+      <div class="ev g-S"><span class="yr">897</span><span class="who">볼리바르</span><p>라이타니엔이 싱가스 왕조를 세워 볼리바르를 괴뢰국으로 삼음</p></div>
+      <div class="ev g-A"><span class="yr">1038</span><span class="who">이베리아</span><p>대침묵. 씨본과 해일이 해안을 삼킴</p></div>
+      <div class="ev g-B"><span class="yr">1039</span><span class="who">시라쿠사</span><p>시뇨라 시칠리아가 그레이홀을 세우고 12 패밀리 체제가 굳어짐</p></div>
+      <div class="ev g-S"><span class="yr">1048</span><span class="who">볼리바르</span><p>컬럼비아가 볼리바르를 침공. 삼파전의 씨앗</p></div>
+      <div class="ev g-B"><span class="yr">1077</span><span class="who">라이타니엔</span><p>선제후 봉기로 위치킹 처형, 쌍둥이 여황 즉위</p></div>
+      <div class="ev g-B"><span class="yr">1098</span><span class="who">빅토리아</span><p>1094년부터의 무정부 상태를 끝내고 왕위 공석의 의회제 시작</p></div>
+      <div class="ev g-A"><span class="yr ko">최근</span><span class="who">우르수스 · 라테라노 · 쉐라그</span><p>제국 종식, 율법의 진실 공개, 빅토리아 침공 저지</p></div>
+      <div class="ev g-S"><span class="yr ko">예고</span><span class="who">볼리바르 · 시라쿠사</span><p>1100년대 내전 재격화, 그레이홀과 누오보 볼시니의 충돌</p></div>
+    </div>
   </section>
 
-  <section class="card" aria-labelledby="h-flow">
-    <div class="card-head"><h2 id="h-flow">위기를 수출한 나라</h2><span class="sub">다른 나라의 등급을 끌어올린 개입</span></div>
-    <div class="flows" id="flows"></div>
+  <section aria-labelledby="h-disp">
+    <div class="sec-head"><h2 id="h-disp">정세 갱신</h2><span class="tag">FIELD DISPATCH</span></div>
+    <p class="sec-sub">최근 스토리를 반영해 고친 세 나라입니다.</p>
+    <div class="sec-body disps">
+      <article class="disp">
+        <header><span class="stamp">갱신</span><h3>라테라노</h3><span class="chg"><span class="chip g-C">C</span>→<span class="chip g-B">B</span></span></header>
+        <div class="delta"><span>체제 <b>2 → 3</b></span><span>합계 <b>10 → 11</b></span><span>추세 <b>→ 에서 ↗</b></span></div>
+        <ul>
+          <li>이벤트 「중생의 여정」에서 <b>율법의 진실이 공민에게 공개</b>됨</li>
+          <li>그 뒤 <b>스스로 목숨을 끊는 공민이 늘고 있음</b></li>
+          <li>산크타가 사르카즈에서 갈라져 나왔다는 사실은 오랫동안 금기였고, 초대 성도의 모습도 지워져 있었음</li>
+        </ul>
+        <p class="verdict">신앙이 곧 질서인 나라에서 믿음의 근거가 흔들립니다. 감염자 추방에 더해 체제 점수를 올렸습니다.</p>
+      </article>
+      <article class="disp">
+        <header><span class="stamp">갱신</span><h3>쉐라그</h3><span class="chg"><span class="chip g-C">C</span>유지</span></header>
+        <div class="delta"><span>체제 <b>3 → 2</b></span><span>대외 <b>3 → 4</b></span><span>합계 <b>10</b></span></div>
+        <ul>
+          <li>빅토리아와 여러 차례 갈등을 겪었고 <b>침공 위협</b>을 받음</li>
+          <li><b>엔야</b>가 쉐라간드의 의지를 이어받음</li>
+          <li><b>엔시오데스</b>가 배신자를 찾아 구금하고 쉐라그의 대표자가 됨</li>
+        </ul>
+        <p class="verdict">안은 하나로 뭉쳤고 밖의 압력은 커졌습니다. 두 점수가 맞바뀌어 합계는 그대로입니다.</p>
+      </article>
+      <article class="disp">
+        <header><span class="stamp">갱신</span><h3>시라쿠사</h3><span class="chg"><span class="chip g-B">B</span>유지</span></header>
+        <div class="delta"><span>점수 <b>유지</b></span><span>추세 <b>→ 에서 ?</b></span></div>
+        <ul>
+          <li>패밀리 없는 신도시 <b>누오보 볼시니</b>가 세워진 지 1년</li>
+          <li><b>레온투초</b>와 <b>라비니아</b>가 각자의 정의를 밀고 나감. <b>드미트리</b>는 겉으로는 적대하지만 뒤에서 도움</li>
+          <li>다음 이야기로 <b>그레이홀의 도전 또는 침공</b>이 예정됨</li>
+        </ul>
+        <p class="verdict">개혁의 싹은 텄지만 옛 체제와의 충돌이 남았습니다. 점수는 두고 추세를 변수로 바꿨습니다.</p>
+      </article>
+    </div>
   </section>
 
-  <section class="card" aria-labelledby="h-trend">
-    <div class="card-head"><h2 id="h-trend">움직이는 등급</h2><span class="sub">최근 스토리 기준 방향</span></div>
-    <div class="trends">
-      <div class="trend"><h3>↘ 완화되는 중</h3><ul>
-        <li><b>우르수스</b> <span>제국 종식, 새 질서 수립 중</span></li>
-        <li><b>카즈델</b> <span>휴전 후 신세대 중심 재건</span></li>
-        <li><b>빅토리아</b> <span>의회제, 국민투표로 왕 선출 예정</span></li>
-        <li><b>카지미에시</b> <span>감염자 기사단 합법화</span></li>
-        <li><b>사미</b> <span>데몬 유입 경로 봉쇄(히든 엔딩)</span></li>
-      </ul></div>
-      <div class="trend"><h3>↗ 악화될 조짐</h3><ul>
-        <li><b>볼리바르</b> <span>1100년대 내전 재격화 언급, 블랙 플로우 확산</span></li>
-      </ul></div>
-      <div class="trend"><h3>? 변수</h3><ul>
-        <li><b>대염</b> <span>엔드필드 시점에 내전이 있었다는 언급</span></li>
-        <li><b>우르수스</b> <span>새 정권의 감염자 정책 미확인</span></li>
-      </ul></div>
+  <section aria-labelledby="h-trend">
+    <div class="sec-head"><h2 id="h-trend">움직이는 등급</h2><span class="tag">TREND</span></div>
+    <div class="sec-body lanes">
+      <div class="lane">
+        <div class="lane-head"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8L28 30M28 30V14M28 30H12" fill="none" stroke="var(--ink-2)" stroke-width="4"/></svg><h3>완화되는 중</h3></div>
+        <ul>
+          <li><b>우르수스</b><span>제국 종식, 새 질서 수립 중</span></li>
+          <li><b>카즈델</b><span>휴전 뒤 신세대 중심 재건</span></li>
+          <li><b>빅토리아</b><span>의회제, 국민투표로 왕 선출 예정</span></li>
+          <li><b>카지미에시</b><span>감염자 기사단 합법화</span></li>
+          <li><b>사미</b><span>데몬 유입 경로 봉쇄(히든 엔딩)</span></li>
+        </ul>
+      </div>
+      <div class="lane">
+        <div class="lane-head"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 32L28 10M28 10V26M28 10H12" fill="none" stroke="var(--S)" stroke-width="4"/></svg><h3>악화될 조짐</h3></div>
+        <ul>
+          <li><b>볼리바르</b><span>1100년대 내전 재격화 언급, 블랙 플로우 확산</span></li>
+          <li><b>라테라노</b><span>율법의 진실 공개 뒤 자살 증가</span></li>
+        </ul>
+      </div>
+      <div class="lane">
+        <div class="lane-head"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M13 14a7 7 0 1 1 10 6c-2 1.200-3 2.500-3 5" fill="none" stroke="var(--ink-2)" stroke-width="4"/><rect x="18" y="29" width="4" height="4" fill="var(--ink-2)"/></svg><h3>변수</h3></div>
+        <ul>
+          <li><b>시라쿠사</b><span>그레이홀과 신도시의 충돌 예고</span></li>
+          <li><b>쉐라그</b><span>빅토리아의 침공을 막아내는 중</span></li>
+          <li><b>대염</b><span>엔드필드 시점에 내전이 있었다는 언급</span></li>
+          <li><b>우르수스</b><span>새 정권의 감염자 정책 미확인</span></li>
+        </ul>
+      </div>
     </div>
   </section>
 </main>
 
-<footer class="wrap">
-  <p>점수와 등급은 공개된 스토리와 나무위키·PRTS·커뮤니티 자료를 바탕으로 한 주관적 평가입니다. 우르수스 점수는 제국기 기준입니다.</p>
-  <p>나라별 근거와 출처: <a href="https://claude.ai/artifact/LkUZ6Qng3AyGpz3ytBFL4N">테라 국가 위기 등급 보고서</a></p>
+<footer>
+  <div class="wrap">
+    <p>점수와 등급은 공개된 스토리, 위키·커뮤니티 자료, 플레이 기록을 바탕으로 한 주관적 평가입니다. 우르수스 점수는 제국기 기준입니다.</p>
+    <p>나라별 근거와 출처: <a href="https://claude.ai/artifact/LkUZ6Qng3AyGpz3ytBFL4N">테라 국가 위기 등급 보고서</a></p>
+  </div>
 </footer>
 
 <div id="tip" role="tooltip" hidden></div>
 
-<style>.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
 <script>
 const AX = ['재앙', '체제', '차별', '대외'];
 const N = [
-  { n: '볼리바르', full: '볼리바르', g: 'S', s: [4,5,4,5], t: '↗', tn: '내전 재격화 예고',
+  { n: '볼리바르', full: '볼리바르', motif: '중남미', s: [4,5,4,5], t: '↗', tn: '내전 재격화 예고',
     why: ['블랙 플로우 변질과 사냥개', '괴뢰 정부 둘과 반군의 삼파전', '민간인 학살과 식민 착취', '라이타니엔·컬럼비아의 대리전'] },
-  { n: '카즈델', full: '카즈델 / 사르카즈', g: 'S', s: [4,4,5,4], t: '↘', tn: '휴전 후 재건 중',
+  { n: '카즈델', full: '카즈델 / 사르카즈', motif: '사르카즈의 나라', s: [4,4,5,4], t: '↘', tn: '휴전 뒤 재건 중',
     why: ['거듭된 파괴, 사르카즈의 오랜 원한', '테레시아·테레시스의 왕위 내전', '종족 전체가 박해 대상', '런디니움 점령과 전쟁'] },
-  { n: '우르수스', full: '우르수스 (제국기)', g: 'A', s: [3,4,5,4], t: '↘', tn: '제국 종식, 재편 중',
+  { n: '우르수스', full: '우르수스 (제국기)', motif: '러시아', s: [3,4,5,4], t: '↘', tn: '제국 종식, 재편 중',
     why: ['혹한의 동토와 잦은 천재', '혁명으로 선 제국, 의회 해산', '감염자 광산 노역', '대외 팽창, 갈리아 전쟁'] },
-  { n: '이베리아', full: '이베리아', g: 'A', s: [5,4,4,2], t: '→', tn: '유지',
+  { n: '이베리아', full: '이베리아', motif: '스페인·포르투갈', s: [5,4,4,2], t: '→', tn: '유지',
     why: ['1038년 대침묵, 씨본 침략', '재판소 중심의 공포 통치', '이단 심문과 강압적 치안', '해안을 잃고 고립'] },
-  { n: '사르곤', full: '사르곤', g: 'A', s: [4,4,3,3], t: '→', tn: '유지',
+  { n: '사르곤', full: '사르곤', motif: '중동', s: [4,4,3,3], t: '→', tn: '유지',
     why: ['남쪽 푄 고온지대의 데몬 전선', '파디샤·아미르 내전', '부족·계층 격차', '컬럼비아 용병의 대리전'] },
-  { n: '빅토리아', full: '빅토리아', g: 'B', s: [2,4,3,3], t: '↘', tn: '의회제로 수습 중',
-    why: ['큰 초월적 재앙 없음', '왕위 공석, 대공 내전', '감염자·계층 차별', '런디니움 점령, 갈리아 전쟁'] },
-  { n: '라이타니엔', full: '라이타니엔', g: 'B', s: [2,3,3,4], t: '→', tn: '유지',
+  { n: '빅토리아', full: '빅토리아', motif: '영국', s: [2,4,3,3], t: '↘', tn: '의회제로 수습 중',
+    why: ['큰 초월적 재앙 없음', '왕위 공석, 대공 내전', '감염자·계층 차별', '런디니움 점령, 쉐라그와 갈등'] },
+  { n: '라이타니엔', full: '라이타니엔', motif: '독일권', s: [2,3,3,4], t: '→', tn: '유지',
     why: ['큰 초월적 재앙 없음', '선제후 정치, 위치킹의 광기', '아츠 엘리트주의, 감염자 차별', '갈리아 멸망, 볼리바르 괴뢰 왕조'] },
-  { n: '사미', full: '사미', g: 'B', s: [5,3,2,2], t: '↘', tn: '멸망 위기 넘김(히든 엔딩)',
+  { n: '사미', full: '사미', motif: '북유럽 설원', s: [5,3,2,2], t: '↘', tn: '멸망 위기 넘김(히든 엔딩)',
     why: ['데몬의 침식, 법칙의 변질', '국력이 데몬 전쟁에 묶임', '차별 서술 적음', '바깥과 교류 적음'] },
-  { n: '컬럼비아', full: '컬럼비아', g: 'B', s: [3,2,3,4], t: '→', tn: '위기 수출국',
+  { n: '컬럼비아', full: '컬럼비아', motif: '미국', s: [3,2,3,4], t: '→', tn: '위기 수출국',
     why: ['기업 실험이 낳는 재앙 위험', '법치 아래 비교적 안정', '감염자 민영 보험 강제', '볼리바르·사르곤 개입'] },
-  { n: '카지미에시', full: '카지미에시', g: 'B', s: [2,3,4,2], t: '↘', tn: '감염자 기사 합법화',
+  { n: '카지미에시', full: '카지미에시', motif: '폴란드', s: [2,3,4,2], t: '↘', tn: '감염자 기사 합법화',
     why: ['큰 초월적 재앙 없음', '상업연합회의 금권 정치', '감염자 격리 구역', '대외 분쟁 적음'] },
-  { n: '시라쿠사', full: '시라쿠사', g: 'B', s: [2,4,3,2], t: '→', tn: '유지',
-    why: ['늑대 군주의 그림자', '12 패밀리 연맹이 정부를 대신', '패밀리 밖 시민의 소외', '대외 분쟁 적음'] },
-  { n: '아비사', full: '아비사', g: 'B', s: [5,3,2,1], t: '→', tn: '유지',
+  { n: '시라쿠사', full: '시라쿠사', motif: '이탈리아', s: [2,4,3,2], t: '?', tn: '신도시 1년, 그레이홀과 충돌 예고',
+    why: ['늑대 군주의 그림자', '그레이홀·12 패밀리 체제와 패밀리 없는 신도시가 맞섬', '패밀리 밖 시민의 소외', '대외 분쟁 적음'] },
+  { n: '아비사', full: '아비사', motif: '해저 문명', s: [5,3,2,1], t: '→', tn: '유지',
     why: ['씨본과의 오랜 전쟁', '폐쇄적인 체제', '차별 서술 적음', '뭍과 단절한 고립주의'] },
-  { n: '대염', full: '대염', g: 'B', s: [4,2,3,2], t: '?', tn: '미래 내전 언급(엔드필드)',
+  { n: '대염', full: '대염', motif: '중국', s: [4,2,3,2], t: '?', tn: '미래 내전 언급(엔드필드)',
     why: ['쉐이 같은 고대 거수', '전제 황정이지만 안정', '지방·민간 차원의 감염자 차별', '대외 분쟁 적음'] },
-  { n: '용문', full: '용문', g: 'C', s: [2,2,4,2], t: '→', tn: '유지',
+  { n: '라테라노', full: '라테라노', motif: '바티칸', s: [2,3,4,2], t: '↗', tn: '율법의 진실 공개 뒤 동요',
+    why: ['큰 초월적 재앙 없음', '율법의 진실 공개로 신앙이 흔들림, 자살 증가', '감염자 즉시 추방, 사르카즈 기원 은폐', '대외 분쟁 적음'] },
+  { n: '용문', full: '용문', motif: '홍콩', s: [2,2,4,2], t: '→', tn: '유지',
     why: ['큰 초월적 재앙 없음', '총독 체제로 안정', '빈민가와 감염자 격리', '대염의 감찰'] },
-  { n: '쉐라그', full: '쉐라그', g: 'C', s: [2,3,2,3], t: '→', tn: '유지',
-    why: ['험한 설산', '가문 사이 세력 다툼', '차별 서술 적음', '주변 강대국의 압박'] },
-  { n: '라테라노', full: '라테라노', g: 'C', s: [2,2,4,2], t: '→', tn: '유지',
-    why: ['큰 초월적 재앙 없음', '교황청 아래 안정', '감염자 즉시 추방', '대외 분쟁 적음'] },
+  { n: '쉐라그', full: '쉐라그', motif: '설산의 종교국', s: [2,2,2,4], t: '→', tn: '빅토리아 침공을 막아내는 중',
+    why: ['험한 설산', '엔야와 엔시오데스 아래 결속, 배신자 구금', '차별 서술 적음', '빅토리아의 침공 위협'] },
 ];
-N.forEach((d, i) => { d.i = i; d.tot = d.s.reduce((a, b) => a + b, 0); d.man = d.s[1] + d.s[2] + d.s[3]; });
+const gradeOf = t => t >= 17 ? 'S' : t >= 14 ? 'A' : t >= 11 ? 'B' : t >= 8 ? 'C' : 'D';
+N.forEach((d, i) => { d.i = i; d.tot = d.s.reduce((a, b) => a + b, 0); d.man = d.s[1] + d.s[2] + d.s[3]; d.g = gradeOf(d.tot); });
 const byName = Object.fromEntries(N.map(d => [d.n, d]));
+const ranked = [...N].sort((a, b) => b.tot - a.tot || a.i - b.i);
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-/* axis tiles */
+/* hero readouts + distribution */
 const avgs = AX.map((_, j) => N.reduce((a, d) => a + d.s[j], 0) / N.length);
 const topJ = avgs.indexOf(Math.max(...avgs));
-$('#topAxis').textContent = AX[topJ];
-$('#topAxisLab').textContent = `테라에서 가장 흔한 위기 (평균 ${avgs[topJ].toFixed(1)})`;
-$('#axisTiles').innerHTML = AX.map((a, j) => {
+$('#hudN').textContent = N.length;
+$('#hudS').textContent = N.filter(d => d.g === 'S').length;
+$('#hudMax').textContent = ranked[0].tot;
+$('#hudAxis').textContent = AX[topJ];
+$('#hudAxisLab').textContent = `가장 흔한 위기 (평균 ${avgs[topJ].toFixed(1)})`;
+const X = t => ((t - 3.5) / 17 * 100) + '%';
+const groups = {};
+N.forEach(d => (groups[d.tot] = groups[d.tot] || []).push(d));
+$('#distPlot').innerHTML = Object.entries(groups).map(([t, ds]) => `<div class="dstack" style="left:${X(+t)}">${ds.map(d =>
+  `<i class="ddot g-${d.g}" tabindex="0" data-tip="n" data-i="${d.i}" aria-label="${esc(d.full)} 합계 ${d.tot}점"></i>`).join('')}</div>`).join('');
+$('#zticks').innerHTML = [4, 8, 11, 14, 17, 20].map(v => `<span style="left:${X(v)}">${v}</span>`).join('');
+const counts = ['S', 'A', 'B', 'C'].map(g => [g, N.filter(d => d.g === g).length]);
+const busiest = counts.reduce((a, b) => b[1] > a[1] ? b : a);
+$('#distL').textContent = `마름모 하나가 한 나라 · 가장 붐비는 등급은 ${busiest[0]} (${busiest[1]}개국)`;
+$('#distR').textContent = 'S: ' + ranked.filter(d => d.g === 'S').reverse().map(d => `${d.n} ${d.tot}`).join(' · ');
+
+/* tier board */
+function dia(s, g) {
+  const p = s.map(v => v / 5 * 24);
+  return `<svg class="dia" viewBox="-27 -27 54 54" aria-hidden="true">
+    <polygon points="0,-24 24,0 0,24 -24,0" fill="none" stroke="var(--line-2)" stroke-width="1"/>
+    <polygon points="0,-14.4 14.4,0 0,14.4 -14.4,0" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <path d="M0-24V24M-24 0H24" fill="none" stroke="var(--line)" stroke-width="1"/>
+    <polygon points="0,${-p[0]} ${p[1]},0 0,${p[2]} ${-p[3]},0" fill="var(--${g})" fill-opacity=".38" stroke="var(--${g})" stroke-width="1.7" stroke-linejoin="round"/></svg>`;
+}
+const BANG = { S: 4, A: 3, B: 2, C: 1 };
+const TIERS = [['S', '극한', '17–20'], ['A', '심각', '14–16'], ['B', '위태', '11–13'], ['C', '불안정', '8–10']];
+$('#tierRows').innerHTML = TIERS.map(([g, ko, r]) => `<div class="tier tier-${g} g-${g}">
+  <div class="tier-key"><div><b>${g}</b><i class="bang" aria-hidden="true">${'!'.repeat(BANG[g])}</i><span>${ko}</span><small>${r}</small></div></div>
+  <div class="tier-cards">${ranked.filter(d => d.g === g).map(d => `
+    <article class="ncard" tabindex="0" data-tip="n" data-i="${d.i}" aria-label="${esc(d.full)}, ${g}등급, 합계 ${d.tot}점, ${AX.map((a, j) => a + ' ' + d.s[j]).join(', ')}">
+      <div class="nc-top"><div><h3>${esc(d.n)}</h3><span class="motif">${esc(d.motif)}</span></div>${dia(d.s, g)}</div>
+      <div class="nc-num"><b>${d.tot}</b><small>/ 20</small></div>
+      <div class="pips" aria-hidden="true">${Array.from({ length: 20 }, (_, k) => `<i${k < d.tot ? ' class="on"' : ''}></i>`).join('')}</div>
+      <div class="nc-tr">${d.t} ${esc(d.tn)}</div>
+    </article>`).join('')}</div>
+</div>`).join('');
+
+/* gauges */
+const ARC = Math.PI * 44;
+$('#gauges').innerHTML = AX.map((a, j) => {
   const fives = N.filter(d => d.s[j] === 5).map(d => d.n);
-  return `<div class="atile${j === topJ ? ' top' : ''}">
-    <div class="row1"><b>${a}</b><span class="avg">${avgs[j].toFixed(1)}<small> / 5</small></span></div>
-    <div class="meter"><i style="width:${avgs[j] / 5 * 100}%"></i></div>
-    <span class="five">5점: ${fives.length ? fives.join(', ') : '없음'}</span>
+  const ticks = [0, 1, 2, 3, 4, 5].map(k => { const th = Math.PI * (1 - k / 5), c = Math.cos(th), s = Math.sin(th); return `M${(60 + 51 * c).toFixed(1)} ${(62 - 51 * s).toFixed(1)}L${(60 + 55 * c).toFixed(1)} ${(62 - 55 * s).toFixed(1)}`; }).join('');
+  return `<div class="gtile">
+    <svg viewBox="0 0 120 72" role="img" aria-label="${a} 평균 ${avgs[j].toFixed(1)}점 (5점 만점)">
+      <path d="M16 62A44 44 0 0 1 104 62" fill="none" stroke="var(--line)" stroke-width="9"/>
+      <path d="M16 62A44 44 0 0 1 104 62" fill="none" stroke="var(--h3)" stroke-width="9" stroke-dasharray="${(ARC * avgs[j] / 5).toFixed(1)} ${ARC.toFixed(1)}"/>
+      <path d="${ticks}" fill="none" stroke="var(--ink-3)" stroke-width="1"/>
+      <text x="60" y="60" text-anchor="middle" fill="var(--ink)" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="700" font-size="27">${avgs[j].toFixed(1)}</text>
+    </svg>
+    <b>${a}${j === topJ ? '<em>최다</em>' : ''}</b>
+    <span>5점: ${fives.length ? fives.join(', ') : '없음'}</span>
   </div>`;
 }).join('');
-
-/* ranked bars */
-const pct = v => (v / 20 * 100) + '%';
-$('#over').innerHTML = [0, 5, 10, 15, 20].map(v => `<i class="gl" style="left:${pct(v)}"></i>`).join('')
-  + [[11, 'B'], [14, 'A'], [17, 'S']].map(([v, g]) => `<i class="th" style="left:${pct(v)}"></i><span class="thl" style="left:${pct(v)}">${g} ${v}</span>`).join('');
-$('#ticks').innerHTML = [0, 5, 10, 15, 20].map(v => `<span style="left:${pct(v)}">${v}</span>`).join('');
-const maxTot = Math.max(...N.map(d => d.tot));
-$('#bars').innerHTML = [...N].sort((a, b) => b.tot - a.tot || a.i - b.i).map(d => `
-  <div class="brow" tabindex="0" data-tip="n" data-i="${d.i}" aria-label="${esc(d.full)}, ${d.g}등급, 합계 ${d.tot}점">
-    <span class="nm">${esc(d.n)}</span>
-    <span class="trk"><i class="bar" style="width:${pct(d.tot)};background:var(--g-${d.g})"></i>${d.tot === maxTot ? `<span class="val" style="left:${pct(d.tot)}">${d.tot}</span>` : ''}</span>
-    <span class="tr" aria-hidden="true">${d.t}</span>
-  </div>`).join('');
 
 /* heatmap */
 function renderHeat(col) {
@@ -346,50 +550,78 @@ function renderHeat(col) {
   $('#heat tbody').innerHTML = rows.map(d => `<tr>
     <th scope="row">${esc(d.n)}</th>
     ${d.s.map((v, j) => `<td class="cell v${v}" tabindex="0" data-tip="c" data-i="${d.i}" data-j="${j}" aria-label="${esc(d.n)} ${AX[j]} ${v}점: ${esc(d.why[j])}">${v}</td>`).join('')}
-    <td class="tot">${d.tot}<span class="chip ${d.g}">${d.g}</span></td>
+    <td class="tot">${d.tot}<span class="chip g-${d.g}">${d.g}</span></td>
   </tr>`).join('');
   document.querySelectorAll('#heat th[data-col]').forEach(th => th.classList.toggle('sorted', +th.dataset.col === col));
   document.querySelectorAll('.sorter button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.sort === col)));
 }
-document.querySelector('.sorter').addEventListener('click', e => {
-  const b = e.target.closest('button[data-sort]');
-  if (b) { hide(); renderHeat(+b.dataset.sort); }
-});
+$('.sorter').addEventListener('click', e => { const b = e.target.closest('button[data-sort]'); if (b) { hide(); renderHeat(+b.dataset.sort); } });
 renderHeat(-1);
 
-/* quadrant */
+/* crosshair matrix */
 const Q = [
-  { key: 'disaster', h: '재앙형', rule: '재앙 4↑ · 인재 8↓', desc: '바깥에서 오는 초월적 위협이 중심', test: d => d.s[0] >= 4 && d.man < 9 },
-  { key: 'both', h: '복합형', rule: '재앙 4↑ · 인재 9↑', desc: '재앙과 사람이 만든 위기가 맞물림', test: d => d.s[0] >= 4 && d.man >= 9 },
-  { key: 'calm', h: '안정권', rule: '재앙 3↓ · 인재 8↓', desc: '겉은 안정적이지만 차별이 숨어 있음', test: d => d.s[0] < 4 && d.man < 9 },
-  { key: 'human', h: '인재형', rule: '재앙 3↓ · 인재 9↑', desc: '체제와 차별, 전쟁이 위기를 만듦', test: d => d.s[0] < 4 && d.man >= 9 },
+  { cls: '', h: '재앙형', rule: '재앙 4↑ · 인재 8↓', desc: '바깥에서 오는 초월적 위협이 중심', test: d => d.s[0] >= 4 && d.man < 9 },
+  { cls: 'both', h: '복합형', rule: '재앙 4↑ · 인재 9↑', desc: '재앙과 사람이 만든 위기가 맞물림', test: d => d.s[0] >= 4 && d.man >= 9 },
+  { cls: '', h: '안정권', rule: '재앙 3↓ · 인재 8↓', desc: '겉은 버티고 있지만 불씨가 있음', test: d => d.s[0] < 4 && d.man < 9 },
+  { cls: '', h: '인재형', rule: '재앙 3↓ · 인재 9↑', desc: '체제와 차별, 전쟁이 위기를 만듦', test: d => d.s[0] < 4 && d.man >= 9 },
 ];
-$('#quad').innerHTML = Q.map(q => {
-  const list = N.filter(q.test).sort((a, b) => b.tot - a.tot);
-  return `<div class="qcell"><div><h3>${q.h} <small class="rule">${q.rule}</small></h3><p class="desc">${q.desc}</p></div>
-    <div class="qlist">${list.map(d => `<span class="qn" tabindex="0" data-tip="n" data-i="${d.i}"><i class="dot" style="background:var(--g-${d.g})"></i>${esc(d.n)}<small>${d.s[0]}·${d.man}</small></span>`).join('')}</div></div>`;
-}).join('');
+$('#quad').innerHTML = Q.map(q => `<div class="qcell ${q.cls}"><div><h3>${q.h}</h3><span class="rule">${q.rule}</span><p class="desc">${q.desc}</p></div>
+  <div class="qlist">${ranked.filter(q.test).map(d => `<span class="qn g-${d.g}" tabindex="0" data-tip="n" data-i="${d.i}"><i class="dot"></i>${esc(d.n)}<small>${d.s[0]}·${d.man}</small></span>`).join('')}</div></div>`).join('');
 
-/* flows */
-const pill = name => {
-  const d = byName[name];
-  if (name === '사르카즈') return `<span class="pill"><i class="dot" style="background:var(--g-S)"></i>사르카즈</span>`;
-  if (!d) return `<span class="pill gone">${esc(name)} · 멸망</span>`;
-  return `<span class="pill"><i class="dot" style="background:var(--g-${d.g})"></i>${esc(name)}</span>`;
-};
-const FLOWS = [
-  { from: ['컬럼비아'], to: '볼리바르', how: '괴뢰 연립정부를 세우고, 테코마 마을에서 짐승군주 실험을 벌여 블랙 플로우를 변질시킴' },
-  { from: ['라이타니엔'], to: '볼리바르', how: '897년 괴뢰 싱가스 왕조를 세움. 위치킹의 공작이 1048년 컬럼비아의 볼리바르 침공으로 이어짐' },
-  { from: ['컬럼비아'], to: '사르곤', how: '아미르 내전에 용병과 오리지늄 자본이 얽힌 대리전' },
-  { from: ['라이타니엔', '빅토리아', '우르수스'], to: '갈리아', how: '4국(사황) 전쟁으로 갈리아를 멸망시킴' },
-  { from: ['사르카즈'], to: '빅토리아', how: '사르카즈 군이 수도 런디니움을 오랫동안 점령' },
+/* link map */
+const SRC = ['컬럼비아', '라이타니엔', '우르수스', '빅토리아', '카즈델'];
+const DST = [['사르곤', ''], ['볼리바르', ''], ['갈리아', '멸망'], ['쉐라그', '저지 중'], ['빅토리아', '런디니움']];
+const LINKS = [
+  ['컬럼비아', '사르곤', '아미르 내전에 용병과 오리지늄 자본이 얽힌 대리전'],
+  ['컬럼비아', '볼리바르', '괴뢰 연립정부를 세우고, 테코마 마을의 짐승군주 실험으로 블랙 플로우를 변질시킴'],
+  ['라이타니엔', '볼리바르', '897년 괴뢰 싱가스 왕조를 세움. 위치킹의 공작이 1048년 컬럼비아의 침공을 부름'],
+  ['라이타니엔', '갈리아', '4국 전쟁에서 위치킹의 아츠가 갈리아 선봉을 격파'],
+  ['우르수스', '갈리아', '4국 전쟁에 연합군으로 참전해 갈리아를 무너뜨림'],
+  ['빅토리아', '갈리아', '갈리아의 침공을 받은 뒤 연합군으로 반격, 갈리아 멸망'],
+  ['빅토리아', '쉐라그', '여러 갈등 끝에 침공을 꾀했지만 쉐라그가 막아내는 중', 'dash'],
+  ['카즈델', '빅토리아', '사르카즈 군이 수도 런디니움을 오랫동안 점령'],
 ];
-$('#flows').innerHTML = FLOWS.map(f => `<div class="flow">
-  <div class="src">${f.from.map(pill).join('')}</div>
-  <div class="arrow" aria-label="에서"></div>
-  <div>${pill(f.to)}</div>
-  <p class="how">${esc(f.how)}</p>
-</div>`).join('');
+const gOf = n => (byName[n] ? byName[n].g : '');
+$('#flSrc').innerHTML = SRC.map(n => `<li class="node g-${gOf(n)}" tabindex="0" data-side="s" data-k="${n}"><i class="dot"></i><span>${n}</span></li>`).join('');
+$('#flDst').innerHTML = DST.map(([n, sub]) => `<li class="node ${gOf(n) ? 'g-' + gOf(n) : 'gone'}" tabindex="0" data-side="d" data-k="${n}">${gOf(n) ? '<i class="dot"></i>' : ''}<span>${n}${sub ? `<small>${sub}</small>` : ''}</span></li>`).join('');
+$('#flowNotes').innerHTML = LINKS.map((l, k) => `<li data-k="${k}"><b>${l[0]} → ${l[1]}</b>${esc(l[2])}</li>`).join('');
+const fmap = $('#flowmap'), lsvg = $('#links');
+function drawLinks() {
+  const R = fmap.getBoundingClientRect();
+  if (!R.width) return;
+  lsvg.setAttribute('viewBox', `0 0 ${R.width} ${R.height}`);
+  const slot = (side, name, k) => {
+    const mine = LINKS.map((l, i) => [l, i]).filter(([l]) => l[side === 's' ? 0 : 1] === name).map(([, i]) => i);
+    const r = fmap.querySelector(`[data-side="${side}"][data-k="${name}"]`).getBoundingClientRect();
+    return { x: (side === 's' ? r.right + 2 : r.left - 7) - R.left, y: r.top - R.top + r.height * (mine.indexOf(k) + 1) / (mine.length + 1) };
+  };
+  lsvg.innerHTML = `<defs><marker id="ah" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z" fill="var(--ink-2)"/></marker></defs>`
+    + LINKS.map((l, k) => { const a = slot('s', l[0], k), b = slot('d', l[1], k), m = (a.x + b.x) / 2;
+      return `<path data-k="${k}" class="${l[3] || ''}" d="M${a.x.toFixed(1)} ${a.y.toFixed(1)}C${m.toFixed(1)} ${a.y.toFixed(1)} ${m.toFixed(1)} ${b.y.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}" marker-end="url(#ah)"/>`; }).join('');
+  mark(marked);
+}
+let marked = null;
+function mark(set) {
+  marked = set;
+  fmap.classList.toggle('dim', !!set);
+  lsvg.querySelectorAll('path[data-k]').forEach(p => p.classList.toggle('on', !!set && set.has(+p.dataset.k)));
+  document.querySelectorAll('#flowNotes li').forEach(li => li.classList.toggle('on', !!set && set.has(+li.dataset.k)));
+  fmap.querySelectorAll('.node').forEach(nd => nd.classList.toggle('on', !!set && LINKS.some((l, k) => set.has(k) && l[nd.dataset.side === 's' ? 0 : 1] === nd.dataset.k)));
+}
+function linkSet(el) {
+  const nd = el.closest('.node'), li = el.closest('#flowNotes li');
+  if (nd) return new Set(LINKS.map((l, k) => l[nd.dataset.side === 's' ? 0 : 1] === nd.dataset.k ? k : -1).filter(k => k >= 0));
+  if (li) return new Set([+li.dataset.k]);
+  return null;
+}
+const flowSec = $('#h-flow').closest('section');
+flowSec.addEventListener('pointerover', e => mark(linkSet(e.target)));
+flowSec.addEventListener('pointerleave', () => mark(null));
+flowSec.addEventListener('focusin', e => mark(linkSet(e.target)));
+flowSec.addEventListener('focusout', () => mark(null));
+new ResizeObserver(drawLinks).observe(fmap);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLinks);
+drawLinks();
 
 /* tooltip */
 const tip = $('#tip');
@@ -400,10 +632,9 @@ function build(el) {
     const j = +el.dataset.j;
     return `<div class="t1">${esc(d.full)} · ${AX[j]} ${d.s[j]}</div><div class="m">${esc(d.why[j])}</div>`;
   }
-  return `<div class="t1">${esc(d.full)}<span class="chip ${d.g}">${d.g}</span></div>
-    <div>합계 <b>${d.tot}</b> / 20</div>
-    <div class="ax">${AX.map((a, j) => `<span>${a} <b>${d.s[j]}</b></span>`).join('')}</div>
-    <div class="m">${d.t} ${esc(d.tn)}</div>`;
+  return `<div class="t1">${esc(d.full)}<span class="chip g-${d.g}">${d.g}</span></div>
+    <div class="m">합계 ${d.tot} / 20 · ${d.t} ${esc(d.tn)}</div>
+    <dl>${AX.map((a, j) => `<dt>${a} ${d.s[j]}</dt><dd>${esc(d.why[j])}</dd>`).join('')}</dl>`;
 }
 function place(x, y) {
   const r = tip.getBoundingClientRect();
